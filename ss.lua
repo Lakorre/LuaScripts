@@ -1,7 +1,7 @@
 -- ====== Menu Config ======
-local MenuSize = vec2(100, 900)        -- أكبر/متوسط حجم للشاشة
-local MenuStartCoords = vec2(50, 50)    -- بدء من الأعلى واليسار
-local SidebarWidth = 100                
+local MenuSize = vec2(100, 100)        -- أكبر/متوسط حجم للشاشة
+local MenuStartCoords = vec2(20, 20)    -- بدء من الأعلى واليسار
+local SidebarWidth = 10                
 local SectionsPadding = 10
 local TopGap = 10
 local SectionsCount = 3
@@ -24,4 +24,5 @@ local MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSiz
 MachoMenuSetAccent(MenuWindow, 255, 255, 150) -- أصفر فاتح
 
 local isMenuOpen = true
+
 
