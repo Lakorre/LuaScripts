@@ -11,8 +11,8 @@ MachoMenuCheckbox(AliSection, "Show Player IDs",
     function() showPlayerIDs = false print("Player IDs OFF") end
 )
 
--- Heal / Revive button
-MachoMenuButton(AliSection, "Revive Yourself (esx) ", function()
+-- Revive Yourself (esx) button
+MachoMenuButton(AliSection, "Revive Yourself (esx)", function()
     TriggerEvent('esx_ambulancejob:revive', PlayerPedId())
     MachoMenuNotification("Ali Menu", "You have been revived!")
 end)
@@ -21,4 +21,3 @@ end)
 MachoMenuButton(AliSection, "Close Ali", function()
     MachoMenuDestroy(AliMenu)
 end)
-
