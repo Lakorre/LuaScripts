@@ -17,7 +17,7 @@ local SectionThreeEnd = vec2(SectionThreeStart.x + EachSectionWidth, MenuSize.y 
 
 -- Create our window, MenuStartCoords is where the menu starts
 MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
-MachoMenuSetAccent(MenuWindow, 137, 52, 235)
+MachoMenuSetAccent(MenuWindow, 235, 52, 52)
 MachoMenuSetKeybind(MenuWindow, 0x78) -- F9 key
 
 -- Add title text
