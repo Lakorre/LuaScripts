@@ -1,24 +1,21 @@
--- ====== ESX Menu ======
+-- ====== Global Variable ======
+local showPlayerIDsESX = false
+
+-- ====== Create ESX Menu ======
 local MenuSize = vec2(600, 400)
 local MenuStartCoords = vec2(500, 300)
 local TabsBarWidth = 150
 local SectionsPadding = 10
 local MachoPaneGap = 10
-local SectionsCount = 1
 local SectionChildWidth = MenuSize.x - TabsBarWidth
-local EachSectionWidth = (SectionChildWidth - (SectionsPadding * (SectionsCount + 1))) / SectionsCount
+local EachSectionWidth = (SectionChildWidth - (SectionsPadding * 2)) / 1
 
 local MainStart = vec2(TabsBarWidth + SectionsPadding, SectionsPadding + MachoPaneGap)
 local MainEnd = vec2(MainStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
 
--- ====== Create Menu Window ======
 local ESXWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
-MachoMenuSetAccent(ESXWindow, 50, 200, 50) -- أخضر فاتح
+MachoMenuSetAccent(ESXWindow, 50, 200, 50)
 
--- ====== Global Variables ======
-local showPlayerIDsESX = false
-
--- ====== Main Section ======
 local ESXSection = MachoMenuGroup(ESXWindow, "ESX Menu", MainStart.x, MainStart.y, MainEnd.x, MainEnd.y)
 
 -- ====== Buttons ======
@@ -63,7 +60,7 @@ function DrawText3D(x, y, z, text)
     end
 end
 
--- ====== Thread Show Player IDs ======
+-- ====== Player IDs Thread ======
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
@@ -71,10 +68,12 @@ Citizen.CreateThread(function()
             for _, playerId in ipairs(GetActivePlayers()) do
                 if playerId ~= PlayerId() then
                     local ped = GetPlayerPed(playerId)
-                    local headCoords = GetPedBoneCoords(ped, 0x796e, 0.0, 0.0, 0.55)
-                    local name = GetPlayerName(playerId)
-                    local serverId = GetPlayerServerId(playerId)
-                    DrawText3D(headCoords.x, headCoords.y, headCoords.z + 0.3, string.format("%s | ID: %d", name, serverId))
+                    if ped and DoesEntityExist(ped) then
+                        local headCoords = GetPedBoneCoords(ped, 0x796e, 0.0, 0.0, 0.55)
+                        local name = GetPlayerName(playerId)
+                        local serverId = GetPlayerServerId(playerId)
+                        DrawText3D(headCoords.x, headCoords.y, headCoords.z + 0.3, string.format("%s | ID: %d", name, serverId))
+                    end
                 end
             end
         end
