@@ -62,8 +62,11 @@ function UpdateMainContent(category)
             SetPedArmour(PlayerPedId(), 100)
         end)
         MachoMenuButton(MainContent, "Heal / Armor", function()
-            SetPedArmour(-1(-1), 100)
-        end)
+    local playerPed = PlayerPedId()
+    SetEntityHealth(playerPed, 100)
+    SetPedArmour(playerPed, 100)
+    MachoMenuNotification("RICO", "Health & Armor Restored")
+end)
         MachoMenuButton(MainContent, "Suicide", function()
             -- Add suicide functionality here
         end)
@@ -198,5 +201,6 @@ MachoMenuText(TabsSection, "")
 MachoMenuButton(TabsSection, "Close Menu", function()
     MachoMenuDestroy(MenuWindow)
 end)
+
 
 
