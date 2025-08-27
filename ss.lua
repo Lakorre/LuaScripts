@@ -1,8 +1,8 @@
 -- ====== Menu Config ======
-local MenuSize = vec2(800, 450)        -- حجم أصغر بكثير
+local MenuSize = vec2(1200, 700)        -- حجم أكبر قليلاً
 local MenuStartCoords = vec2(50, 50)   
-local TabsBarWidth = 120                
-local SectionsPadding = 10
+local TabsBarWidth = 180                
+local SectionsPadding = 15
 local MachoPaneGap = 10
 local SectionsCount = 3
 
