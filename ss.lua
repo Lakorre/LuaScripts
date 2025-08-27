@@ -17,6 +17,12 @@ MachoMenuButton(ESXSection, "Revive Yourself (esx)", function()
     MachoMenuNotification("ESX Menu", "You have been revived!")
 end)
 
+-- handcuff (esx) button
+MachoMenuButton(ESXSection, "Revive Yourself (esx)", function()
+                    TriggerEvent('esx_misc:handcuff')
+    MachoMenuNotification("ESX Menu", "You have been revived!")
+end)
+
 -- Close button
 MachoMenuButton(ESXSection, "Close ESX Menu", function()
     MachoMenuDestroy(ESXMenu)
@@ -39,3 +45,4 @@ Citizen.CreateThread(function()
         end
     end
 end)
+
