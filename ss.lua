@@ -64,7 +64,7 @@ function UpdateMainContent(category)
        MachoMenuButton(MainContent, "Armor", function()
     local playerPed = PlayerPedId()
 
-    MachoMenuButton(MainContent, "Heal / Armor", function()
+    MachoMenuButton(MainContent, "Armor", function()
     local playerPed = PlayerPedId()
     SetEntityHealth(playerPed, 100)
     SetPedArmour(playerPed, 100)
@@ -205,6 +205,7 @@ MachoMenuText(TabsSection, "")
 MachoMenuButton(TabsSection, "Close Menu", function()
     MachoMenuDestroy(MenuWindow)
 end)
+
 
 
 
