@@ -75,6 +75,9 @@ MachoMenuText(LeftCol, "Hijack keybind (Hold): NONE")
 local RightCol = MachoMenuGroup(MenuWindow, "Vehicle & CheckBox", RightStart.x, RightStart.y, RightEnd.x, RightEnd.y)
 
 MachoMenuCheckbox(RightCol, "Steal Car", function() print("Steal Car: ON") end, function() print("Steal Car: OFF") end)
+MachoMenuCheckbox(RightCol, "Steal Car", function() print("Steal Car: ON") end, function() print("Steal Car: OFF") end)
+MachoMenuCheckbox(RightCol, "Steal Car", function() print("Steal Car: ON") end, function() print("Steal Car: OFF") end)
+
 MachoMenuCheckbox(RightCol, "Seat Belt", function() print("Seat Belt: ON") end, function() print("Seat Belt: OFF") end)
 MachoMenuCheckbox(RightCol, "Rainbow Vehicle Colour", function() print("Rainbow: ON") end, function() print("Rainbow: OFF") end)
 MachoMenuCheckbox(RightCol, "Horn Boost", function() print("Horn Boost: ON") end, function() print("Horn Boost: OFF") end)
@@ -94,3 +97,4 @@ MachoMenuSlider(RightCol, "Shift Boost Speed", 50, 0, 200, "km/h", 0, function(v
 end)
 
 MachoMenuCheckbox(RightCol, "Shift Boost", function() print("Shift Boost: ON") end, function() print("Shift Boost: OFF") end)
+
