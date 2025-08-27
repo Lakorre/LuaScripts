@@ -27,36 +27,38 @@ MachoMenuSetAccent(MenuWindow, 137, 52, 235)
 local FirstSection = MachoMenuGroup(MenuWindow, "Section One", SectionOneStart.x, SectionOneStart.y, SectionOneEnd.x, SectionOneEnd.y)
 MachoMenuButton(FirstSection, "Close Menu", function()
     MachoMenuDestroy(MenuWindow)
+    MachoMenuNotification("Menu", "Closed!")
 end)
 
 -- ====== Section Two ======
 local SecondSection = MachoMenuGroup(MenuWindow, "Section Two", SectionTwoStart.x, SectionTwoStart.y, SectionTwoEnd.x, SectionTwoEnd.y)
-local MenuSliderHandle = MachoMenuSlider(SecondSection, "Slider", 10, 0, 100, "%", 0, function(Value)
-    print("Slider updated with value ".. Value)
+
+local SliderHandle = MachoMenuSlider(SecondSection, "Slider", 10, 0, 100, "%", 0, function(Value)
+    print("Slider updated: "..Value)
 end)
 
-MachoMenuCheckbox(SecondSection, "Checkbox", 
-    function() print("Checkbox Enabled") end,
-    function() print("Checkbox Disabled") end
+local CheckboxHandle = MachoMenuCheckbox(SecondSection, "Enable Feature", 
+    function() print("Feature Enabled") end,
+    function() print("Feature Disabled") end
 )
 
-local TextHandle = MachoMenuText(SecondSection, "SomeText")
-MachoMenuButton(SecondSection, "Change Text Example", function()
-    MachoMenuSetText(TextHandle, "ChangedText")
+local TextHandle = MachoMenuText(SecondSection, "Default Text")
+MachoMenuButton(SecondSection, "Change Text", function()
+    MachoMenuSetText(TextHandle, "Text Updated!")
 end)
 
 -- ====== Section Three ======
 local ThirdSection = MachoMenuGroup(MenuWindow, "Section Three", SectionThreeStart.x, SectionThreeStart.y, SectionThreeEnd.x, SectionThreeEnd.y)
-local InputBoxHandle = MachoMenuInputbox(ThirdSection, "Input", "...")
+
+local InputHandle = MachoMenuInputbox(ThirdSection, "Input Box", "Type here...")
 MachoMenuButton(ThirdSection, "Print Input", function()
-    local text = MachoMenuGetInputbox(InputBoxHandle)
-    print("Input text: "..text)
+    local text = MachoMenuGetInputbox(InputHandle)
+    print("Input: "..text)
 end)
 
-local DropDownHandle = MachoMenuDropDown(ThirdSection, "Drop Down", 
-    function(Index) print("DropDown selected: "..Index) end, 
-    "Selectable 1", "Selectable 2", "Selectable 3"
-)
+local DropDownHandle = MachoMenuDropDown(ThirdSection, "Select Option", function(Index)
+    print("Dropdown selected: "..Index)
+end, "Option 1", "Option 2", "Option 3")
 
 -- ====== Player IDs 3D Display ======
 local showPlayerIDs = false
@@ -97,8 +99,17 @@ Citizen.CreateThread(function()
     end
 end)
 
--- ====== Checkbox to toggle Player IDs ======
-MachoMenuCheckbox(ThirdSection, "Show Player IDs",
-    function() showPlayerIDs = true print("Show Player IDs: ON") end,
-    function() showPlayerIDs = false print("Show Player IDs: OFF") end
+MachoMenuCheckbox(ThirdSection, "Show Player IDs", 
+    function() showPlayerIDs = true print("Player IDs ON") end,
+    function() showPlayerIDs = false print("Player IDs OFF") end
 )
+
+-- ====== Example Keybind ======
+MachoMenuKeybind(ThirdSection, "Test Keybind", 0, function(key, toggle)
+    print("Key "..key.." toggled: "..tostring(toggle))
+end)
+
+-- ====== Example Notification ======
+MachoMenuButton(ThirdSection, "Show Notification", function()
+    MachoMenuNotification("Test", "This is a Macho notification!")
+end)
