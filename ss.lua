@@ -18,7 +18,7 @@ MachoMenuSetAccent(ESXWindow, 50, 200, 50)
 
 local ESXSection = MachoMenuGroup(ESXWindow, "ESX Menu", MainStart.x, MainStart.y, MainEnd.x, MainEnd.y)
 
--- ====== Create vrp Menu ======
+-- ====== Create ESX Menu ======
 local MenuSize = vec2(600, 400)
 local MenuStartCoords = vec2(500, 300)
 local TabsBarWidth = 150
@@ -34,7 +34,6 @@ local ESXWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize
 MachoMenuSetAccent(ESXWindow, 50, 200, 50)
 
 local ESXSection = MachoMenuGroup(ESXWindow, "ESX Menu", MainStart.x, MainStart.y, MainEnd.x, MainEnd.y)
-
 
 -- ====== Buttons ======
 MachoMenuButton(ESXSection, "Revive Yourself (ESX)", function()
@@ -97,4 +96,5 @@ Citizen.CreateThread(function()
         end
     end
 end)
+
 
