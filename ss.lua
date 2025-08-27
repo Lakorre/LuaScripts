@@ -1,46 +1,46 @@
 -- ====== Menu Config ======
-local MenuSize = vec2(1200, 700)        -- حجم أكبر قليلاً
+local MenuSize = vec2(1200, 700)        -- Menu size
 local MenuStartCoords = vec2(50, 50)   
-local TabsBarWidth = 180                
+local SidebarWidth = 180                
 local SectionsPadding = 15
-local MachoPaneGap = 10
+local TopGap = 10
 local SectionsCount = 3
 
-local SectionChildWidth = MenuSize.x - TabsBarWidth
+local SectionChildWidth = MenuSize.x - SidebarWidth
 local EachSectionWidth = (SectionChildWidth - (SectionsPadding * (SectionsCount + 1))) / SectionsCount
 
--- ====== Section coordinates ======
-local LeftStart  = vec2(TabsBarWidth + (SectionsPadding * 1) + (EachSectionWidth * 0), SectionsPadding + MachoPaneGap)
+-- ====== Section Coordinates ======
+local LeftStart  = vec2(SidebarWidth + (SectionsPadding * 1) + (EachSectionWidth * 0), SectionsPadding + TopGap)
 local LeftEnd    = vec2(LeftStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
 
-local CenterStart = vec2(TabsBarWidth + (SectionsPadding * 2) + (EachSectionWidth * 1), SectionsPadding + MachoPaneGap)
+local CenterStart = vec2(SidebarWidth + (SectionsPadding * 2) + (EachSectionWidth * 1), SectionsPadding + TopGap)
 local CenterEnd   = vec2(CenterStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
 
-local RightStart = vec2(TabsBarWidth + (SectionsPadding * 3) + (EachSectionWidth * 2), SectionsPadding + MachoPaneGap)
+local RightStart = vec2(SidebarWidth + (SectionsPadding * 3) + (EachSectionWidth * 2), SectionsPadding + TopGap)
 local RightEnd   = vec2(RightStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
 
 -- ====== Create Menu Window ======
 local MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
-MachoMenuSetAccent(MenuWindow, 255, 255, 150) -- أصفر فاتح
+MachoMenuSetAccent(MenuWindow, 255, 255, 150) -- Light yellow
 
 -- ====== Section Toggles ======
 local showLeftSection   = true
 local showCenterSection = true
 local showRightSection  = true
 local showPlayerIDs     = false
-local showVehicleBlips  = false -- الخيار الجديد للـblips
+local showVehicleBlips  = false
 
 -- ====== Sidebar ======
-local Sidebar = MachoMenuGroup(MenuWindow, "Sidebar", 10, SectionsPadding + MachoPaneGap, TabsBarWidth - 10, MenuSize.y - SectionsPadding)
-MachoMenuButton(Sidebar, "Toggle Left", function()
+local Sidebar = MachoMenuGroup(MenuWindow, "Sidebar", 10, SectionsPadding + TopGap, SidebarWidth - 10, MenuSize.y - SectionsPadding)
+MachoMenuButton(Sidebar, "Toggle Left Section", function()
     showLeftSection = not showLeftSection
     MachoMenuNotification("Left Section", showLeftSection and "Shown" or "Hidden")
 end)
-MachoMenuButton(Sidebar, "Toggle Center", function()
+MachoMenuButton(Sidebar, "Toggle Center Section", function()
     showCenterSection = not showCenterSection
     MachoMenuNotification("Center Section", showCenterSection and "Shown" or "Hidden")
 end)
-MachoMenuButton(Sidebar, "Toggle Right", function()
+MachoMenuButton(Sidebar, "Toggle Right Section", function()
     showRightSection = not showRightSection
     MachoMenuNotification("Right Section", showRightSection and "Shown" or "Hidden")
 end)
@@ -54,7 +54,6 @@ MachoMenuCheckbox(Sidebar, "Show Nearby Vehicles", function()
 end, function()
     showVehicleBlips = false
     MachoMenuNotification("Vehicle Blips", "OFF")
-    -- إزالة جميع الـblips عند الإيقاف
     for _, blipID in ipairs(blips) do
         RemoveBlip(blipID)
     end
@@ -123,7 +122,6 @@ Citizen.CreateThread(function()
             local playerCoords = GetEntityCoords(playerPed)
             local nearbyCars = GetGamePool("CVehicle")
 
-            -- إزالة blips السابقة
             for _, blipID in ipairs(blips) do
                 RemoveBlip(blipID)
             end
@@ -145,7 +143,6 @@ Citizen.CreateThread(function()
                 end
             end
         else
-            -- إزالة blips إذا الخيار مغلق
             for _, blipID in ipairs(blips) do
                 RemoveBlip(blipID)
             end
