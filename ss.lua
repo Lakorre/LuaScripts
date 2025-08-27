@@ -23,7 +23,7 @@ local RightEnd   = vec2(RightStart.x + EachSectionWidth, MenuSize.y - SectionsPa
 local MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
 MachoMenuSetAccent(MenuWindow, 255, 255, 150) -- أصفر فاتح
 
-local isMenuOpen = true
+local isBigMenuOpen = true -- المنيو الكبير مستقل
 
 -- ====== Sidebar ======
 local Sidebar = MachoMenuGroup(MenuWindow, "Sidebar", 10, SectionsPadding + MachoPaneGap, TabsBarWidth - 10, MenuSize.y - SectionsPadding)
@@ -31,8 +31,8 @@ MachoMenuButton(Sidebar, "Player", function() print("[Menu] Player") end)
 MachoMenuButton(Sidebar, "Vehicle", function() print("[Menu] Vehicle") end)
 MachoMenuButton(Sidebar, "Settings", function() print("[Menu] Settings") end)
 MachoMenuButton(Sidebar, "Close", function() 
-    isMenuOpen = false 
-    MachoMenuNotification("Menu", "Closed") 
+    isBigMenuOpen = false 
+    MachoMenuNotification("Big Menu", "Closed") 
 end)
 
 -- ====== Left Section ======
@@ -67,7 +67,7 @@ MachoMenuCheckbox(RightSection, "Show Player IDs",
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
-        if showPlayerIDs then
+        if showPlayerIDs and isBigMenuOpen then
             for _, playerId in ipairs(GetActivePlayers()) do
                 if playerId ~= PlayerId() then
                     local ped = GetPlayerPed(playerId)
@@ -100,17 +100,17 @@ function DrawText3D(x, y, z, text)
     end
 end
 
--- ====== Page Up Toggle ======
+-- ====== Page Up Toggle (Independent from MachoMenu) ======
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
         if IsControlJustPressed(1, 0x21) then -- Page Up
-            if isMenuOpen then
-                isMenuOpen = false
-                MachoMenuNotification("Menu", "Hidden")
+            if isBigMenuOpen then
+                isBigMenuOpen = false
+                MachoMenuNotification("Big Menu", "Hidden")
             else
-                isMenuOpen = true
-                MachoMenuNotification("Menu", "Shown")
+                isBigMenuOpen = true
+                MachoMenuNotification("Big Menu", "Shown")
             end
         end
     end
