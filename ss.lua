@@ -28,6 +28,7 @@ local showLeftSection   = true
 local showCenterSection = true
 local showRightSection  = true
 local showPlayerIDs     = false
+local showVehicleBlips  = false -- الخيار الجديد للـblips
 
 -- ====== Sidebar ======
 local Sidebar = MachoMenuGroup(MenuWindow, "Sidebar", 10, SectionsPadding + MachoPaneGap, TabsBarWidth - 10, MenuSize.y - SectionsPadding)
@@ -46,6 +47,18 @@ end)
 MachoMenuButton(Sidebar, "Toggle Player IDs", function()
     showPlayerIDs = not showPlayerIDs
     MachoMenuNotification("Player IDs", showPlayerIDs and "ON" or "OFF")
+end)
+MachoMenuCheckbox(Sidebar, "Show Nearby Vehicles", function()
+    showVehicleBlips = true
+    MachoMenuNotification("Vehicle Blips", "ON")
+end, function()
+    showVehicleBlips = false
+    MachoMenuNotification("Vehicle Blips", "OFF")
+    -- إزالة جميع الـblips عند الإيقاف
+    for _, blipID in ipairs(blips) do
+        RemoveBlip(blipID)
+    end
+    blips = {}
 end)
 
 -- ====== Left Section ======
@@ -96,6 +109,47 @@ Citizen.CreateThread(function()
                     DrawText3D(headCoords.x, headCoords.y, headCoords.z + 0.3, string.format("%s | ID: %d", name, serverId))
                 end
             end
+        end
+    end
+end)
+
+-- ====== Vehicle Blips ======
+local blips = {}
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(1000)
+        if showVehicleBlips then
+            local playerPed = PlayerPedId()
+            local playerCoords = GetEntityCoords(playerPed)
+            local nearbyCars = GetGamePool("CVehicle")
+
+            -- إزالة blips السابقة
+            for _, blipID in ipairs(blips) do
+                RemoveBlip(blipID)
+            end
+            blips = {}
+
+            for _, vehicle in ipairs(nearbyCars) do
+                local vehicleCoords = GetEntityCoords(vehicle)
+                local distance = #(playerCoords - vehicleCoords)
+
+                if distance <= 500.0 then
+                    local vehicleName = GetDisplayNameFromVehicleModel(GetEntityModel(vehicle))
+                    local blip = AddBlipForEntity(vehicle)
+                    SetBlipSprite(blip, 225)
+                    SetBlipColour(blip, 1)
+                    BeginTextCommandSetBlipName("STRING")
+                    AddTextComponentString(vehicleName)
+                    EndTextCommandSetBlipName(blip)
+                    table.insert(blips, blip)
+                end
+            end
+        else
+            -- إزالة blips إذا الخيار مغلق
+            for _, blipID in ipairs(blips) do
+                RemoveBlip(blipID)
+            end
+            blips = {}
         end
     end
 end)
