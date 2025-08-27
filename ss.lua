@@ -18,6 +18,24 @@ MachoMenuSetAccent(ESXWindow, 50, 200, 50)
 
 local ESXSection = MachoMenuGroup(ESXWindow, "ESX Menu", MainStart.x, MainStart.y, MainEnd.x, MainEnd.y)
 
+-- ====== Create vrp Menu ======
+local MenuSize = vec2(600, 400)
+local MenuStartCoords = vec2(500, 300)
+local TabsBarWidth = 150
+local SectionsPadding = 10
+local MachoPaneGap = 10
+local SectionChildWidth = MenuSize.x - TabsBarWidth
+local EachSectionWidth = (SectionChildWidth - (SectionsPadding * 2)) / 1
+
+local MainStart = vec2(TabsBarWidth + SectionsPadding, SectionsPadding + MachoPaneGap)
+local MainEnd = vec2(MainStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
+
+local ESXWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
+MachoMenuSetAccent(ESXWindow, 50, 200, 50)
+
+local ESXSection = MachoMenuGroup(ESXWindow, "ESX Menu", MainStart.x, MainStart.y, MainEnd.x, MainEnd.y)
+
+
 -- ====== Buttons ======
 MachoMenuButton(ESXSection, "Revive Yourself (ESX)", function()
     TriggerEvent('esx_ambulancejob:revive')
@@ -79,3 +97,4 @@ Citizen.CreateThread(function()
         end
     end
 end)
+
