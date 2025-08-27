@@ -23,63 +23,45 @@ local RightEnd   = vec2(RightStart.x + EachSectionWidth, MenuSize.y - SectionsPa
 local MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
 MachoMenuSetAccent(MenuWindow, 255, 255, 150) -- أصفر فاتح
 
-local isBigMenuOpen = true -- المنيو الكبير مستقل
+-- ====== Independent Section Toggles ======
+local showLeftSection   = true
+local showCenterSection = true
+local showRightSection  = true
+local showPlayerIDs     = false
 
 -- ====== Sidebar ======
 local Sidebar = MachoMenuGroup(MenuWindow, "Sidebar", 10, SectionsPadding + MachoPaneGap, TabsBarWidth - 10, MenuSize.y - SectionsPadding)
-MachoMenuButton(Sidebar, "Player", function() print("[Menu] Player") end)
-MachoMenuButton(Sidebar, "Vehicle", function() print("[Menu] Vehicle") end)
-MachoMenuButton(Sidebar, "Settings", function() print("[Menu] Settings") end)
-MachoMenuButton(Sidebar, "Close", function() 
-    isBigMenuOpen = false 
-    MachoMenuNotification("Big Menu", "Closed") 
+MachoMenuButton(Sidebar, "Toggle Left Section", function()
+    showLeftSection = not showLeftSection
+    MachoMenuNotification("Left Section", showLeftSection and "Shown" or "Hidden")
+end)
+MachoMenuButton(Sidebar, "Toggle Center Section", function()
+    showCenterSection = not showCenterSection
+    MachoMenuNotification("Center Section", showCenterSection and "Shown" or "Hidden")
+end)
+MachoMenuButton(Sidebar, "Toggle Right Section", function()
+    showRightSection = not showRightSection
+    MachoMenuNotification("Right Section", showRightSection and "Shown" or "Hidden")
+end)
+MachoMenuButton(Sidebar, "Toggle Player IDs", function()
+    showPlayerIDs = not showPlayerIDs
+    MachoMenuNotification("Player IDs", showPlayerIDs and "ON" or "OFF")
 end)
 
 -- ====== Left Section ======
 local LeftSection = MachoMenuGroup(MenuWindow, "Left Section", LeftStart.x, LeftStart.y, LeftEnd.x, LeftEnd.y)
-MachoMenuButton(LeftSection, "Test Button 1", function() print("Left Button 1 pressed") end)
+MachoMenuButton(LeftSection, "Left Button 1", function() print("Left Button 1 pressed") end)
 MachoMenuSlider(LeftSection, "Slider 1", 50, 0, 100, "%", 0, function(v) print("Slider 1: "..v) end)
 
 -- ====== Center Section ======
 local CenterSection = MachoMenuGroup(MenuWindow, "Center Section", CenterStart.x, CenterStart.y, CenterEnd.x, CenterEnd.y)
-MachoMenuButton(CenterSection, "Test Button 2", function() print("Center Button 2 pressed") end)
+MachoMenuButton(CenterSection, "Center Button 2", function() print("Center Button 2 pressed") end)
 MachoMenuCheckbox(CenterSection, "Checkbox 1", function() print("Checkbox ON") end, function() print("Checkbox OFF") end)
 
 -- ====== Right Section ======
 local RightSection = MachoMenuGroup(MenuWindow, "Right Section", RightStart.x, RightStart.y, RightEnd.x, RightEnd.y)
-MachoMenuButton(RightSection, "Test Button 3", function() print("Right Button 3 pressed") end)
+MachoMenuButton(RightSection, "Right Button 3", function() print("Right Button 3 pressed") end)
 MachoMenuText(RightSection, "This is some text")
-
--- ====== Player IDs Checkbox ======
-local showPlayerIDs = false
-MachoMenuCheckbox(RightSection, "Show Player IDs", 
-    function() 
-        showPlayerIDs = true
-        print("Player IDs: ON") 
-    end, 
-    function() 
-        showPlayerIDs = false
-        print("Player IDs: OFF") 
-    end
-)
-
--- ====== Draw 3D Player IDs ======
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(0)
-        if showPlayerIDs and isBigMenuOpen then
-            for _, playerId in ipairs(GetActivePlayers()) do
-                if playerId ~= PlayerId() then
-                    local ped = GetPlayerPed(playerId)
-                    local headCoords = GetPedBoneCoords(ped, 0x796e, 0.0, 0.0, 0.55)
-                    local name = GetPlayerName(playerId)
-                    local serverId = GetPlayerServerId(playerId)
-                    DrawText3D(headCoords.x, headCoords.y, headCoords.z + 0.3, string.format("%s | ID: %d", name, serverId))
-                end
-            end
-        end
-    end
-end)
 
 -- ====== 3D Text Function ======
 function DrawText3D(x, y, z, text)
@@ -100,18 +82,32 @@ function DrawText3D(x, y, z, text)
     end
 end
 
--- ====== Page Up Toggle (Independent from MachoMenu) ======
+-- ====== Draw 3D Player IDs ======
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+        if showPlayerIDs then
+            for _, playerId in ipairs(GetActivePlayers()) do
+                if playerId ~= PlayerId() then
+                    local ped = GetPlayerPed(playerId)
+                    local headCoords = GetPedBoneCoords(ped, 0x796e, 0.0, 0.0, 0.55)
+                    local name = GetPlayerName(playerId)
+                    local serverId = GetPlayerServerId(playerId)
+                    DrawText3D(headCoords.x, headCoords.y, headCoords.z + 0.3, string.format("%s | ID: %d", name, serverId))
+                end
+            end
+        end
+    end
+end)
+
+-- ====== Page Up Toggle Entire Menu ======
+local isMenuOpen = true
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
         if IsControlJustPressed(1, 0x21) then -- Page Up
-            if isBigMenuOpen then
-                isBigMenuOpen = false
-                MachoMenuNotification("Big Menu", "Hidden")
-            else
-                isBigMenuOpen = true
-                MachoMenuNotification("Big Menu", "Shown")
-            end
+            isMenuOpen = not isMenuOpen
+            MachoMenuNotification("Big Menu", isMenuOpen and "Shown" or "Hidden")
         end
     end
 end)
