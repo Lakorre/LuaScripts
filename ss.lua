@@ -61,9 +61,9 @@ MachoMenuButton(SecondSection, "Change Text Example", function()
 -- Third tab
 ThirdSection = MachoMenuGroup(MenuWindow, "Section Three", SectionThreeStart.x, SectionThreeStart.y, SectionThreeEnd.x, SectionThreeEnd.y)
 
-InputBoxHandle = MachoMenuInputbox(ThirdSection, "Input", "...")
+InputBoxHandle = MachoMenuInputbox(ThirdSection, "Inpsut", "...")
 MachoMenuButton(ThirdSection, "Print Input", function()
-    local LocatedText = MachoMenuGetInputbox(InputBoxHandle)
+    local LocatedText = MachoMenuGetInputbox(InputBsoxHandle)
     print(LocatedText)
   end)
 
@@ -75,3 +75,4 @@ DropDownHandle = MachoMenuDropDown(ThirdSection, "Drop Down",
     "Selectable 2",
     "Selectable 3"
 )
+
