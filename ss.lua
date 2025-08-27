@@ -1,24 +1,41 @@
--- ====== Ali Menu ======
-local AliMenu = MachoMenuWindow(200, 150, 600, 400)
-MachoMenuSetAccent(AliMenu, 50, 200, 50) -- أخضر
+-- ====== ESX Menu ======
+local ESXMenu = MachoMenuWindow(700, 150, 1100, 400) -- موقع القائمة وحجمها
+MachoMenuSetAccent(ESXMenu, 50, 150, 255) -- أزرق فاتح
 
-local AliSection = MachoMenuGroup(AliMenu, "Ali Options", 10, 10, 580, 380)
-local showPlayerIDs = false
+local ESXSection = MachoMenuGroup(ESXMenu, "ESX Options", 10, 10, 380, 380)
+local showPlayerIDsESX = false
 
 -- Show Player IDs checkbox
-MachoMenuCheckbox(AliSection, "Show Player IDs", 
-    function() showPlayerIDs = true print("Player IDs ON") end, 
-    function() showPlayerIDs = false print("Player IDs OFF") end
+MachoMenuCheckbox(ESXSection, "Show Player IDs", 
+    function() showPlayerIDsESX = true print("Player IDs ON (ESX)") end, 
+    function() showPlayerIDsESX = false print("Player IDs OFF (ESX)") end
 )
 
 -- Revive Yourself (esx) button
-MachoMenuButton(AliSection, "Revive Yourself (esx)", function()
+MachoMenuButton(ESXSection, "Revive Yourself (esx)", function()
     TriggerEvent('esx_ambulancejob:revive', PlayerPedId())
-    MachoMenuNotification("Ali Menu", "You have been revived!")
+    MachoMenuNotification("ESX Menu", "You have been revived!")
 end)
 
 -- Close button
-MachoMenuButton(AliSection, "Close Ali", function()
-    MachoMenuDestroy(AliMenu)
+MachoMenuButton(ESXSection, "Close ESX Menu", function()
+    MachoMenuDestroy(ESXMenu)
 end)
 
+-- ====== Optional: 3D Player IDs Drawing ======
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+        if showPlayerIDsESX then
+            for _, playerId in ipairs(GetActivePlayers()) do
+                if playerId ~= PlayerId() then
+                    local ped = GetPlayerPed(playerId)
+                    local headCoords = GetPedBoneCoords(ped, 0x796e, 0.0, 0.0, 0.55)
+                    local name = GetPlayerName(playerId)
+                    local serverId = GetPlayerServerId(playerId)
+                    DrawText3D(headCoords.x, headCoords.y, headCoords.z + 0.3, string.format("%s | ID: %d", name, serverId))
+                end
+            end
+        end
+    end
+end)
