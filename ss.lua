@@ -1,57 +1,48 @@
--- Menu settings
-local MenuSize = vec2(600, 400)
-local MenuStartCoords = vec2(300, 200) 
-local TabsBarWidth = 0
-local SectionChildWidth = MenuSize.x - TabsBarWidth
-local SectionsCount = 3
-local SectionsPadding = 15
-local MachoPaneGap = 10
-
--- Calculate each section width
+local MenuSize = vec2(500, 300)
+local MenuStartCoords = vec2(500, 500) 
+local TabsBarWidth = 0 -- The width of the tabs bar, height is assumed to be MenuHeight as it goes top to bottom
+local SectionChildWidth = MenuSize.x - TabsBarWidth -- The total size for sections on the left hand side
+local SectionsCount = 3 
+local SectionsPadding = 10 -- pixels between each section (that makes SetionCount + 1 = total padding areas)
+local MachoPaneGap = 10 -- Hard coded gap of accent at the top.
+-- Therefore each section width must be:
 local EachSectionWidth = (SectionChildWidth - (SectionsPadding * (SectionsCount + 1))) / SectionsCount
-
--- Calculate section coordinates
+-- Now you have each sections absolute width, you can calculate their X coordinate and Y coordinate
 local SectionOneStart = vec2(TabsBarWidth + (SectionsPadding * 1) + (EachSectionWidth * 0), SectionsPadding + MachoPaneGap)
 local SectionOneEnd = vec2(SectionOneStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
-
 local SectionTwoStart = vec2(TabsBarWidth + (SectionsPadding * 2) + (EachSectionWidth * 1), SectionsPadding + MachoPaneGap)
 local SectionTwoEnd = vec2(SectionTwoStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
-
 local SectionThreeStart = vec2(TabsBarWidth + (SectionsPadding * 3) + (EachSectionWidth * 2), SectionsPadding + MachoPaneGap)
 local SectionThreeEnd = vec2(SectionThreeStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
 
--- Create main window (x, y, width, height)
-local MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
-
--- Set accent color (RGB: 137, 52, 235)
+-- Create our window, MenuStartCoords is where the menu starts
+MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
 MachoMenuSetAccent(MenuWindow, 137, 52, 235)
+MachoMenuSetKeybind(MenuWindow, 0x78) -- F9 key
 
--- Set keybind (F9)
-MachoMenuSetKeybind(MenuWindow, 0x78)
-
--- Add small title text
+-- Add title text
 MachoMenuSmallText(MenuWindow, "Welcome to Macho Menu!")
 
--- ===== Section One: Player Settings =====
-local PlayerSection = MachoMenuGroup(MenuWindow, "Player Settings", SectionOneStart.x, SectionOneStart.y, SectionOneEnd.x, SectionOneEnd.y)
+-- ===== First Section: Player Settings =====
+FirstSection = MachoMenuGroup(MenuWindow, "Player Settings", SectionOneStart.x, SectionOneStart.y, SectionOneEnd.x, SectionOneEnd.y)
 
--- Heal button
-MachoMenuButton(PlayerSection, "Heal Player", function()
+-- Heal Player
+MachoMenuButton(FirstSection, "Heal Player", function()
     SetEntityHealth(PlayerPedId(), 200)
     MachoMenuNotification("Health", "Player fully healed!")
 end)
 
--- Armor button
-MachoMenuButton(PlayerSection, "Give Armor", function()
+-- Give Armor
+MachoMenuButton(FirstSection, "Give Armor", function()
     SetPedArmour(PlayerPedId(), 100)
     MachoMenuNotification("Armor", "Full armor applied!")
 end)
 
--- Name input box
-local NameInputBox = MachoMenuInputbox(PlayerSection, "Player Name", "Enter new name...")
+-- Player Name Input
+local NameInputBox = MachoMenuInputbox(FirstSection, "Player Name", "Enter new name...")
 
--- Save name button
-MachoMenuButton(PlayerSection, "Save Name", function()
+-- Save Name Button
+MachoMenuButton(FirstSection, "Save Name", function()
     local newName = MachoMenuGetInputbox(NameInputBox)
     if newName and newName ~= "" then
         MachoMenuNotification("Name Change", "Name saved: " .. newName)
@@ -60,8 +51,8 @@ MachoMenuButton(PlayerSection, "Save Name", function()
     end
 end)
 
--- Weapon dropdown
-MachoMenuDropDown(PlayerSection, "Give Weapon", function(selected)
+-- Weapon Dropdown
+MachoMenuDropDown(FirstSection, "Give Weapon", function(selected)
     local weapons = {
         ["Assault Rifle"] = "WEAPON_ASSAULTRIFLE",
         ["Pistol"] = "WEAPON_PISTOL",
@@ -78,20 +69,16 @@ MachoMenuDropDown(PlayerSection, "Give Weapon", function(selected)
     end
 end, "Assault Rifle", "Pistol", "Sniper Rifle", "Shotgun")
 
--- Teleport keybind
-MachoMenuKeybind(PlayerSection, "Teleport Key", 0x54, function(key, toggle)
-    if toggle then
-        local coords = GetEntityCoords(PlayerPedId())
-        SetEntityCoords(PlayerPedId(), coords.x, coords.y, coords.z + 10.0)
-        MachoMenuNotification("Teleport", "Teleported up 10m!")
-    end
+-- Close Button
+MachoMenuButton(FirstSection, "Close", function()
+    MachoMenuDestroy(MenuWindow)
 end)
 
--- ===== Section Two: Vehicle Settings =====
-local VehicleSection = MachoMenuGroup(MenuWindow, "Vehicle Settings", SectionTwoStart.x, SectionTwoStart.y, SectionTwoEnd.x, SectionTwoEnd.y)
+-- ===== Second Section: Vehicle Settings =====
+SecondSection = MachoMenuGroup(MenuWindow, "Vehicle Settings", SectionTwoStart.x, SectionTwoStart.y, SectionTwoEnd.x, SectionTwoEnd.y)
 
--- زر إصلاح المركبة
-MachoMenuButton(VehicleSection, "Repair Vehicle", function()
+-- Repair Vehicle
+MachoMenuButton(SecondSection, "Repair Vehicle", function()
     local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
     if vehicle ~= 0 then
         SetVehicleFixed(vehicle)
@@ -102,8 +89,8 @@ MachoMenuButton(VehicleSection, "Repair Vehicle", function()
     end
 end)
 
--- زر تسريع المركبة
-MachoMenuButton(VehicleSection, "Boost Vehicle", function()
+-- Boost Vehicle
+MachoMenuButton(SecondSection, "Boost Vehicle", function()
     local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
     if vehicle ~= 0 then
         SetVehicleEnginePowerMultiplier(vehicle, 2.0)
@@ -113,8 +100,8 @@ MachoMenuButton(VehicleSection, "Boost Vehicle", function()
     end
 end)
 
--- قائمة منسدلة لاستدعاء المركبات
-MachoMenuDropDown(VehicleSection, "Spawn Vehicle", function(selected)
+-- Spawn Vehicle Dropdown
+MachoMenuDropDown(SecondSection, "Spawn Vehicle", function(selected)
     local vehicles = {
         ["Adder"] = "adder",
         ["Zentorno"] = "zentorno",
@@ -140,33 +127,31 @@ MachoMenuDropDown(VehicleSection, "Spawn Vehicle", function(selected)
     end
 end, "Adder", "Zentorno", "T20", "Insurgent")
 
--- منزلق للسرعة
-MachoMenuSlider(VehicleSection, "Vehicle Speed", 100.0, 50.0, 300.0, "km/h", 0, function(value)
+-- Vehicle Speed Slider
+MachoMenuSlider(SecondSection, "Vehicle Speed", 100.0, 50.0, 300.0, "km/h", 0, function(value)
     local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
     if vehicle ~= 0 then
-        local speed = value / 3.6
+        local speed = value / 3.6 -- Convert km/h to m/s
         SetVehicleForwardSpeed(vehicle, speed)
         MachoMenuNotification("Speed", "Speed set to: " .. value .. " km/h")
     end
 end)
 
--- زر معلومات المحدد
-MachoMenuButton(VehicleSection, "Selected Info", function()
-    local selectedPlayer = MachoMenuGetSelectedPlayer()
-    local selectedVehicle = MachoMenuGetSelectedVehicle()
-    MachoMenuNotification("Selection", "Player: " .. selectedPlayer .. " | Vehicle: " .. selectedVehicle)
+-- Close Button
+MachoMenuButton(SecondSection, "Close", function()
+    MachoMenuDestroy(MenuWindow)
 end)
 
--- ===== القسم الثالث: الإعدادات المتقدمة =====
-local AdvancedSection = MachoMenuGroup(MenuWindow, "Advanced Settings", SectionThreeStart.x, SectionThreeStart.y, SectionThreeEnd.x, SectionThreeEnd.y)
+-- ===== Third Section: Advanced Settings =====
+ThirdSection = MachoMenuGroup(MenuWindow, "Advanced Settings", SectionThreeStart.x, SectionThreeStart.y, SectionThreeEnd.x, SectionThreeEnd.y)
 
--- معلومات السيرفر
-MachoMenuButton(AdvancedSection, "Server Info", function()
+-- Server Info
+MachoMenuButton(ThirdSection, "Server Info", function()
     MachoMenuNotification("Server Info", "Players online: " .. GetNumberOfPlayers())
 end)
 
--- صندوق اختيار للوضع الليلي
-MachoMenuCheckbox(AdvancedSection, "Dark Mode", 
+-- Dark Mode Checkbox
+MachoMenuCheckbox(ThirdSection, "Dark Mode", 
     function() 
         MachoMenuNotification("Dark Mode", "Dark mode enabled")
     end,
@@ -175,8 +160,8 @@ MachoMenuCheckbox(AdvancedSection, "Dark Mode",
     end
 )
 
--- فحص حالة السجل
-MachoMenuButton(AdvancedSection, "Check Logger", function()
+-- Check Logger State
+MachoMenuButton(ThirdSection, "Check Logger", function()
     local state = MachoGetLoggerState()
     local stateText = ""
     if state == 0 then
@@ -189,54 +174,50 @@ MachoMenuButton(AdvancedSection, "Check Logger", function()
     MachoMenuNotification("Logger State", "Current: " .. stateText)
 end)
 
--- تعطيل السجل
-MachoMenuButton(AdvancedSection, "Disable Logger", function()
+-- Disable Logger
+MachoMenuButton(ThirdSection, "Disable Logger", function()
     MachoSetLoggerState(0)
     MachoMenuNotification("Logger", "Logger disabled!")
 end)
 
--- تفعيل السجل
-MachoMenuButton(AdvancedSection, "Enable Logger", function()
+-- Enable Logger
+MachoMenuButton(ThirdSection, "Enable Logger", function()
     MachoSetLoggerState(3)
     MachoMenuNotification("Logger", "Logger enabled!")
 end)
 
--- قفل السجل نهائياً
-MachoMenuButton(AdvancedSection, "🔒 LOCK Logger", function()
+-- Lock Logger (Permanent)
+MachoMenuButton(ThirdSection, "LOCK Logger", function()
     MachoLockLogger()
     MachoMenuNotification("WARNING", "Logger permanently locked!")
 end)
 
--- زر إغلاق القائمة
-MachoMenuButton(AdvancedSection, "Close Menu", function()
+-- Get Selected Info
+MachoMenuButton(ThirdSection, "Selected Info", function()
+    local selectedPlayer = MachoMenuGetSelectedPlayer()
+    local selectedVehicle = MachoMenuGetSelectedVehicle()
+    MachoMenuNotification("Selection", "Player: " .. selectedPlayer .. " | Vehicle: " .. selectedVehicle)
+end)
+
+-- Close Button
+MachoMenuButton(ThirdSection, "Close", function()
     MachoMenuDestroy(MenuWindow)
 end)
 
--- معالج لوحة المفاتيح
+-- Teleport Keybind (T key)
+MachoMenuKeybind(ThirdSection, "Teleport Key", 0x54, function(key, toggle)
+    if toggle then
+        local coords = GetEntityCoords(PlayerPedId())
+        SetEntityCoords(PlayerPedId(), coords.x, coords.y, coords.z + 10.0)
+        MachoMenuNotification("Teleport", "Teleported up 10m!")
+    end
+end)
+
+-- Keyboard Input Handler
 MachoOnKeyDown(function(key)
-    if key == 0x70 then -- F1 key
+    if key == 0x70 then -- F1 key to close menu
         if MachoMenuIsOpen(MenuWindow) then
             MachoMenuDestroy(MenuWindow)
         end
     end
 end)
-
--- مثال على حقن المورد (معطل)
---[[
-MachoInjectResource('any', [[
-    print("Code injected successfully!")
-]])
-]]--
-
--- مثال على المصادقة المدفوعة (معطل)
---[[
-local KeysBin = MachoWebRequest("https://your-website.com/keys")
-local CurrentKey = MachoAuthenticationKey()
-local KeyPresent = string.find(KeysBin, CurrentKey)
-if KeyPresent ~= nil then
-    print("Key is authenticated [" .. CurrentKey .. "]")
-else
-    print("Key is not in the list [" .. CurrentKey .. "]")
-    MachoMenuDestroy(MenuWindow) -- إغلاق القائمة إذا المفتاح غير صالح
-end
-]]--
