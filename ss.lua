@@ -1,6 +1,6 @@
 -- ====== Menu Config ======
-local MenuSize = vec2(500, 300)
-local MenuStartCoords = vec2(500, 500) 
+local MenuSize = vec2(900, 900)
+local MenuStartCoords = vec2(900, 900) 
 
 local TabsBarWidth = 0
 local SectionsCount = 3 
@@ -41,3 +41,4 @@ local ThirdSection = MachoMenuGroup(MenuWindow, "Section Three", SectionThreeSta
 MachoMenuButton(ThirdSection, "Close", function()
     MachoMenuDestroy(MenuWindow)
 end)
+
