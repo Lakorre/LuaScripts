@@ -77,7 +77,7 @@ local RightCol = MachoMenuGroup(MenuWindow, "Vehicle & CheckBox", RightStart.x, 
 MachoMenuCheckbox(RightCol, "Steal Car", function() print("Steal Car: ON") end, function() print("Steal Car: OFF") end)
 MachoMenuCheckbox(RightCol, "Steal Car",
     function()
-        print("Steal Car: ON")
+        print("ids: ON")
         -- ???? ???? ???? ????? ??????? ??? ?????
 function DrawText3D(x, y, z, text)
     local onScreen, _x, _y = World3dToScreen2d(x, y, z)
@@ -184,4 +184,5 @@ MachoMenuSlider(RightCol, "Shift Boost Speed", 50, 0, 200, "km/h", 0, function(v
 end)
 
 MachoMenuCheckbox(RightCol, "Shift Boost", function() print("Shift Boost: ON") end, function() print("Shift Boost: OFF") end)
+
 
