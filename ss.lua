@@ -1,5 +1,5 @@
 -- ====== Menu Config ======
-local MenuSize = vec2(1600, 900)        -- تقريبًا كامل الشاشة
+local MenuSize = vec2(100, 900)        -- تقريبًا كامل الشاشة
 local MenuStartCoords = vec2(50, 50)    -- بدء من الأعلى واليسار
 local TabsBarWidth = 200                 -- عرض الـSidebar
 local SectionsPadding = 20
@@ -111,3 +111,4 @@ Citizen.CreateThread(function()
         end
     end
 end)
+
