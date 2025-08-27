@@ -1,44 +1,35 @@
--- ====== Ali Menu Configuration (Independent) ======
+-- ====== Ali Menu Independent ======
 local MenuSize_Ali = vec2(600, 400)
 local MenuStartCoords_Ali = vec2(500, 300)
-local TabsBarWidth_Ali = 150
-local SectionsPadding_Ali = 10
-local MachoPaneGap_Ali = 10
 
--- Section coordinates
-local MainStart_Ali = vec2(TabsBarWidth_Ali + SectionsPadding_Ali, SectionsPadding_Ali + MachoPaneGap_Ali)
-local MainEnd_Ali = vec2(MainStart_Ali.x + (MenuSize_Ali.x - TabsBarWidth_Ali - SectionsPadding_Ali*2), MenuSize_Ali.y - SectionsPadding_Ali)
-
--- Create independent Menu Window
+-- إنشاء نافذة مستقلة
 local MenuWindow_Ali = MachoMenuWindow(MenuStartCoords_Ali.x, MenuStartCoords_Ali.y, MenuSize_Ali.x, MenuSize_Ali.y)
-MachoMenuSetAccent(MenuWindow_Ali, 255, 255, 150)  -- أصفر فاتح
+MachoMenuSetAccent(MenuWindow_Ali, 255, 255, 150) -- أصفر فاتح
 
--- Main Section
-local AliSection = MachoMenuGroup(MenuWindow_Ali, "Ali", MainStart_Ali.x, MainStart_Ali.y, MainEnd_Ali.x, MainEnd_Ali.y)
+-- إنشاء القسم الرئيسي للقائمة Ali
+local AliSection = MachoMenuGroup(MenuWindow_Ali, "Ali Menu", 20, 20, 580, 380)
 
--- Heal + Armor Button
+-- زر Heal + Armor
 MachoMenuButton(AliSection, "Heal / Armor", function()
-    local playerPed = PlayerPedId()
-    if DoesEntityExist(playerPed) and not IsEntityDead(playerPed) then
-        SetEntityHealth(playerPed, 200)
-        SetPedArmour(playerPed, 100)
-        MachoMenuNotification("Ali", "Health & Armor Restored")
-    end
+    local ped = PlayerPedId()
+    SetEntityHealth(ped, 200)
+    SetPedArmour(ped, 100)
+    MachoMenuNotification("Ali", "Health & Armor Restored")
 end)
 
--- Player IDs Toggle
+-- Toggle Player IDs
 local showPlayerIDs_Ali = false
-MachoMenuCheckbox(AliSection, "Player IDs Toggle", 
+MachoMenuCheckbox(AliSection, "Show Player IDs", 
     function() showPlayerIDs_Ali = true MachoMenuNotification("Ali", "Player IDs ON") end,
     function() showPlayerIDs_Ali = false MachoMenuNotification("Ali", "Player IDs OFF") end
 )
 
--- Close Button
-MachoMenuButton(AliSection, "Close Menu", function()
+-- زر إغلاق مستقل
+MachoMenuButton(AliSection, "Close Ali Menu", function()
     MachoMenuDestroy(MenuWindow_Ali)
 end)
 
--- Draw 3D Player IDs for this menu only
+-- رسم Player IDs خاص بالقائمة Ali فقط
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
@@ -47,8 +38,6 @@ Citizen.CreateThread(function()
                 if playerId ~= PlayerId() then
                     local ped = GetPlayerPed(playerId)
                     local headCoords = GetPedBoneCoords(ped, 0x796e, 0.0, 0.0, 0.55)
-                    local name = GetPlayerName(playerId)
-                    local serverId = GetPlayerServerId(playerId)
                     local onScreen, _x, _y = World3dToScreen2d(headCoords.x, headCoords.y, headCoords.z + 0.3)
                     if onScreen then
                         SetTextScale(0.35, 0.35)
@@ -58,7 +47,7 @@ Citizen.CreateThread(function()
                         SetTextColour(255, 255, 255, 255)
                         SetTextEntry("STRING")
                         SetTextCentre(1)
-                        AddTextComponentString(string.format("%s | ID: %d", name, serverId))
+                        AddTextComponentString(GetPlayerName(playerId).." | ID: "..GetPlayerServerId(playerId))
                         DrawText(_x, _y)
                     end
                 end
