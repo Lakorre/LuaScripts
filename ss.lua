@@ -31,7 +31,7 @@ MachoMenuSetAccent(MenuWindow, 137, 52, 235)
 -- First tab
 FirstSection = MachoMenuGroup(MenuWindow, "Section One", SectionOneStart.x, SectionOneStart.y, SectionOneEnd.x, SectionOneEnd.y)
 
-MachoMenuButton(FirstSection, "Close", function()
+MachoMenuButton(FirstSection, "Clossssssse", function()
     MachoMenuDestroy(MenuWindow)
   end)
 
@@ -75,4 +75,5 @@ DropDownHandle = MachoMenuDropDown(ThirdSection, "Drop Down",
     "Selectable 2",
     "Selectable 3"
 )
+
 
