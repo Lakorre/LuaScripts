@@ -1,8 +1,8 @@
 -- ====== Menu Config ======
-local MenuSize = vec2(1000, 600)        -- حجم أصغر
-local MenuStartCoords = vec2(50, 50)    -- بدء من الأعلى واليسار
-local TabsBarWidth = 150                 -- عرض الـSidebar
-local SectionsPadding = 15
+local MenuSize = vec2(800, 450)        -- حجم أصغر بكثير
+local MenuStartCoords = vec2(50, 50)   
+local TabsBarWidth = 120                
+local SectionsPadding = 10
 local MachoPaneGap = 10
 local SectionsCount = 3
 
@@ -23,7 +23,7 @@ local RightEnd   = vec2(RightStart.x + EachSectionWidth, MenuSize.y - SectionsPa
 local MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
 MachoMenuSetAccent(MenuWindow, 255, 255, 150) -- أصفر فاتح
 
--- ====== Independent Section Toggles ======
+-- ====== Section Toggles ======
 local showLeftSection   = true
 local showCenterSection = true
 local showRightSection  = true
@@ -31,15 +31,15 @@ local showPlayerIDs     = false
 
 -- ====== Sidebar ======
 local Sidebar = MachoMenuGroup(MenuWindow, "Sidebar", 10, SectionsPadding + MachoPaneGap, TabsBarWidth - 10, MenuSize.y - SectionsPadding)
-MachoMenuButton(Sidebar, "Toggle Left Section", function()
+MachoMenuButton(Sidebar, "Toggle Left", function()
     showLeftSection = not showLeftSection
     MachoMenuNotification("Left Section", showLeftSection and "Shown" or "Hidden")
 end)
-MachoMenuButton(Sidebar, "Toggle Center Section", function()
+MachoMenuButton(Sidebar, "Toggle Center", function()
     showCenterSection = not showCenterSection
     MachoMenuNotification("Center Section", showCenterSection and "Shown" or "Hidden")
 end)
-MachoMenuButton(Sidebar, "Toggle Right Section", function()
+MachoMenuButton(Sidebar, "Toggle Right", function()
     showRightSection = not showRightSection
     MachoMenuNotification("Right Section", showRightSection and "Shown" or "Hidden")
 end)
@@ -50,18 +50,18 @@ end)
 
 -- ====== Left Section ======
 local LeftSection = MachoMenuGroup(MenuWindow, "Left Section", LeftStart.x, LeftStart.y, LeftEnd.x, LeftEnd.y)
-MachoMenuButton(LeftSection, "Left Button 1", function() print("Left Button 1 pressed") end)
+MachoMenuButton(LeftSection, "Button 1", function() print("Left Button pressed") end)
 MachoMenuSlider(LeftSection, "Slider 1", 50, 0, 100, "%", 0, function(v) print("Slider 1: "..v) end)
 
 -- ====== Center Section ======
 local CenterSection = MachoMenuGroup(MenuWindow, "Center Section", CenterStart.x, CenterStart.y, CenterEnd.x, CenterEnd.y)
-MachoMenuButton(CenterSection, "Center Button 2", function() print("Center Button 2 pressed") end)
+MachoMenuButton(CenterSection, "Button 2", function() print("Center Button pressed") end)
 MachoMenuCheckbox(CenterSection, "Checkbox 1", function() print("Checkbox ON") end, function() print("Checkbox OFF") end)
 
 -- ====== Right Section ======
 local RightSection = MachoMenuGroup(MenuWindow, "Right Section", RightStart.x, RightStart.y, RightEnd.x, RightEnd.y)
-MachoMenuButton(RightSection, "Right Button 3", function() print("Right Button 3 pressed") end)
-MachoMenuText(RightSection, "This is some text")
+MachoMenuButton(RightSection, "Button 3", function() print("Right Button pressed") end)
+MachoMenuText(RightSection, "Some text")
 
 -- ====== 3D Text Function ======
 function DrawText3D(x, y, z, text)
@@ -82,7 +82,7 @@ function DrawText3D(x, y, z, text)
     end
 end
 
--- ====== Draw 3D Player IDs ======
+-- ====== Draw Player IDs ======
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
@@ -107,7 +107,7 @@ Citizen.CreateThread(function()
         Citizen.Wait(0)
         if IsControlJustPressed(1, 0x21) then -- Page Up
             isMenuOpen = not isMenuOpen
-            MachoMenuNotification("Big Menu", isMenuOpen and "Shown" or "Hidden")
+            MachoMenuNotification("Menu", isMenuOpen and "Shown" or "Hidden")
         end
     end
 end)
