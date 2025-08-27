@@ -1,22 +1,23 @@
--- Create main window
+-- إنشاء النافذة الرئيسية
 local MainWindow = MachoMenuWindow(100.0, 100.0, 500.0, 400.0)
 
--- Set accent color (blue)
+-- تعيين لون مميز (أزرق)
 MachoMenuSetAccent(MainWindow, 0.2, 0.5, 1.0)
 
--- Set keybind (INSERT key)
-MachoMenuSetKeybind(MainWindow, 0x2D)
+-- تعيين مفتاح الاختصار (F9)
+MachoMenuSetKeybind(MainWindow, 0x78)
 
--- Add small title text
+-- إضافة عنوان صغير
 MachoMenuSmallText(MainWindow, "Welcome to Macho Menu!")
 
--- Create tabs
+-- إنشاء التبويبات
 local Tab1 = MachoMenuAddTab(MainWindow, "General Settings")
 local Tab2 = MachoMenuAddTab(MainWindow, "Player")
 local Tab3 = MachoMenuAddTab(MainWindow, "Vehicle")
 
 -- ===== Tab 1: General Settings =====
 local Tab1Group1 = MachoMenuGroup(Tab1, "Server Settings", 10.0, 10.0, 480.0, 120.0)
+local Tab1Group2 = MachoMenuGroup(Tab1, "Logger Protection", 10.0, 140.0, 480.0, 100.0)
 
 -- Server info button
 MachoMenuButton(Tab1Group1, "Server Info", function()
@@ -36,6 +37,39 @@ MachoMenuCheckbox(Tab1Group1, "Enable Dark Mode",
 -- Volume slider
 MachoMenuSlider(Tab1Group1, "Volume Level", 50.0, 0.0, 100.0, "%", 0, function(value)
     MachoMenuNotification("Volume", "Volume set to: " .. value .. "%")
+end)
+
+-- ===== Logger Protection Functions =====
+-- Check logger state button
+MachoMenuButton(Tab1Group2, "Check Logger State", function()
+    local state = MachoGetLoggerState()
+    local stateText = ""
+    if state == 0 then
+        stateText = "All Disabled"
+    elseif state == 3 then
+        stateText = "All Enabled"
+    else
+        stateText = "Partially Enabled (" .. state .. ")"
+    end
+    MachoMenuNotification("Logger State", "Current state: " .. stateText)
+end)
+
+-- Disable logger button
+MachoMenuButton(Tab1Group2, "Disable Logger", function()
+    MachoSetLoggerState(0)
+    MachoMenuNotification("Logger", "Logger disabled (state: 0)")
+end)
+
+-- Enable logger button
+MachoMenuButton(Tab1Group2, "Enable Logger", function()
+    MachoSetLoggerState(3)
+    MachoMenuNotification("Logger", "Logger enabled (state: 3)")
+end)
+
+-- Lock logger permanently (WARNING!)
+MachoMenuButton(Tab1Group2, "🔒 LOCK Logger (Permanent!)", function()
+    MachoLockLogger()
+    MachoMenuNotification("WARNING", "Logger permanently locked until reload!")
 end)
 
 -- ===== Tab 2: Player =====
@@ -156,6 +190,13 @@ MachoMenuSlider(Tab3Group1, "Vehicle Speed", 100.0, 50.0, 300.0, "km/h", 0, func
     end
 end)
 
+-- Get selected info button
+MachoMenuButton(Tab3Group1, "Get Selected Info", function()
+    local selectedPlayer = MachoMenuGetSelectedPlayer()
+    local selectedVehicle = MachoMenuGetSelectedVehicle()
+    MachoMenuNotification("Selection", "Player: " .. selectedPlayer .. " | Vehicle: " .. selectedVehicle)
+end)
+
 -- Keyboard input examples
 MachoOnKeyDown(function(key)
     if key == 0x70 then -- F1 key
@@ -163,11 +204,4 @@ MachoOnKeyDown(function(key)
             MachoMenuDestroy(MainWindow)
         end
     end
-end)
-
--- Example of getting selected player/vehicle
-MachoMenuButton(Tab3Group1, "Get Selected Info", function()
-    local selectedPlayer = MachoMenuGetSelectedPlayer()
-    local selectedVehicle = MachoMenuGetSelectedVehicle()
-    MachoMenuNotification("Selection", "Player: " .. selectedPlayer .. " | Vehicle: " .. selectedVehicle)
 end)
