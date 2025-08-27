@@ -23,6 +23,12 @@ MachoMenuButton(ESXSection, "Handcuff Yourself (esx)", function()
     MachoMenuNotification("ESX Menu", "Handcuffed!")
 end)
 
+-- Unjail Yourself (esx) button
+MachoMenuButton(ESXSection, "Unjail Yourself (esx)", function()
+    TriggerEvent("esx_jail:unJailPlayer")
+    MachoMenuNotification("ESX Menu", "You are unjailed!")
+end)
+
 -- Close button
 MachoMenuButton(ESXSection, "Close ESX Menu", function()
     MachoMenuDestroy(ESXMenu)
