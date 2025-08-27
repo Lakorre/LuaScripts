@@ -1,85 +1,64 @@
--- ====== Layout ======
-local MenuSize        = vec2(900, 500)
-local MenuStartCoords = vec2(480, 240)
+-- ====== Layout Setup ======
+local MenuSize = vec2(600, 350)
+local MenuStartCoords = vec2(500, 500)
 
-local TabsBarWidth    = 170
-local SectionsPadding = 10
-local MachoPaneGap    = 10
-local SectionsCount   = 2
-
+local TabsBarWidth = 0
 local SectionChildWidth = MenuSize.x - TabsBarWidth
-local EachSectionWidth  = (SectionChildWidth - (SectionsPadding * (SectionsCount + 1))) / SectionsCount
+local SectionsCount = 3
+local SectionsPadding = 10
+local MachoPaneGap = 10
 
-local LeftStart  = vec2(TabsBarWidth + (SectionsPadding * 1) + (EachSectionWidth * 0), SectionsPadding + MachoPaneGap)
-local LeftEnd    = vec2(LeftStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
+local EachSectionWidth = (SectionChildWidth - (SectionsPadding * (SectionsCount + 1))) / SectionsCount
 
-local RightStart = vec2(TabsBarWidth + (SectionsPadding * 2) + (EachSectionWidth * 1), SectionsPadding + MachoPaneGap)
-local RightEnd   = vec2(RightStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
+local SectionOneStart = vec2(TabsBarWidth + (SectionsPadding * 1) + (EachSectionWidth * 0), SectionsPadding + MachoPaneGap)
+local SectionOneEnd = vec2(SectionOneStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
 
-local SidebarStart = vec2(SectionsPadding, SectionsPadding + MachoPaneGap)
-local SidebarEnd   = vec2(TabsBarWidth - SectionsPadding, MenuSize.y - SectionsPadding)
+local SectionTwoStart = vec2(TabsBarWidth + (SectionsPadding * 2) + (EachSectionWidth * 1), SectionsPadding + MachoPaneGap)
+local SectionTwoEnd = vec2(SectionTwoStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
 
--- ====== Window ======
-MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
-MachoMenuSetAccent(MenuWindow, 255, 215, 0)  -- أصفر
+local SectionThreeStart = vec2(TabsBarWidth + (SectionsPadding * 3) + (EachSectionWidth * 2), SectionsPadding + MachoPaneGap)
+local SectionThreeEnd = vec2(SectionThreeStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
 
--- ====== Sidebar ======
-local Sidebar = MachoMenuGroup(MenuWindow, "Aura", SidebarStart.x, SidebarStart.y, SidebarEnd.x, SidebarEnd.y)
-MachoMenuButton(Sidebar, "Player",   function() print("[Aura] Player") end)
-MachoMenuButton(Sidebar, "Vehicle",  function() print("[Aura] Vehicle") end)
-MachoMenuButton(Sidebar, "Players",  function() print("[Aura] Players") end)
-MachoMenuButton(Sidebar, "CFW",      function() print("[Aura] CFW") end)
-MachoMenuButton(Sidebar, "VRP",      function() print("[Aura] VRP") end)
-MachoMenuButton(Sidebar, "ESX",      function() print("[Aura] ESX") end)
-MachoMenuButton(Sidebar, "Tools",    function() print("[Aura] Tools") end)
-MachoMenuButton(Sidebar, "Settings", function() print("[Aura] Settings") end)
-MachoMenuButton(Sidebar, "Close",    function() MachoMenuDestroy(MenuWindow) end)
+-- ====== Create Window ======
+local MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
+MachoMenuSetAccent(MenuWindow, 137, 52, 235)
 
--- ====== Left Column ======
-local LeftCol = MachoMenuGroup(MenuWindow, "Vehicle & Self", LeftStart.x, LeftStart.y, LeftEnd.x, LeftEnd.y)
-
-local r = MachoMenuSlider(LeftCol, "Red",   255, 0, 255, "", 0, function(v) print("R="..v) end)
-local g = MachoMenuSlider(LeftCol, "Green", 255, 0, 255, "", 0, function(v) print("G="..v) end)
-local b = MachoMenuSlider(LeftCol, "Blue",  255, 0, 255, "", 0, function(v) print("B="..v) end)
-
-local flipIndex = 1
-MachoMenuDropDown(LeftCol, "Select Flip", function(idx)
-    flipIndex = idx
-    print("Flip selected: "..idx)
-end, "Flip 1", "Flip 2", "Flip 3")
-
-MachoMenuButton(LeftCol, "Flip", function()
-    print("Flip pressed (index "..flipIndex..")")
+-- ====== Section One ======
+local FirstSection = MachoMenuGroup(MenuWindow, "Section One", SectionOneStart.x, SectionOneStart.y, SectionOneEnd.x, SectionOneEnd.y)
+MachoMenuButton(FirstSection, "Close Menu", function()
+    MachoMenuDestroy(MenuWindow)
 end)
 
-MachoMenuButton(LeftCol, "Hijack Nearest Vehicle", function()
-    print("Hijack nearest vehicle")
+-- ====== Section Two ======
+local SecondSection = MachoMenuGroup(MenuWindow, "Section Two", SectionTwoStart.x, SectionTwoStart.y, SectionTwoEnd.x, SectionTwoEnd.y)
+local MenuSliderHandle = MachoMenuSlider(SecondSection, "Slider", 10, 0, 100, "%", 0, function(Value)
+    print("Slider updated with value ".. Value)
 end)
 
-MachoMenuButton(LeftCol, "Remote Car", function()
-    print("Remote car toggled")
+MachoMenuCheckbox(SecondSection, "Checkbox", 
+    function() print("Checkbox Enabled") end,
+    function() print("Checkbox Disabled") end
+)
+
+local TextHandle = MachoMenuText(SecondSection, "SomeText")
+MachoMenuButton(SecondSection, "Change Text Example", function()
+    MachoMenuSetText(TextHandle, "ChangedText")
 end)
 
-MachoMenuText(LeftCol, "Flip keybind (Hold): NONE")
-MachoMenuText(LeftCol, "Hijack keybind (Hold): NONE")
+-- ====== Section Three ======
+local ThirdSection = MachoMenuGroup(MenuWindow, "Section Three", SectionThreeStart.x, SectionThreeStart.y, SectionThreeEnd.x, SectionThreeEnd.y)
+local InputBoxHandle = MachoMenuInputbox(ThirdSection, "Input", "...")
+MachoMenuButton(ThirdSection, "Print Input", function()
+    local text = MachoMenuGetInputbox(InputBoxHandle)
+    print("Input text: "..text)
+end)
 
--- ====== Right Column ======
-local RightCol = MachoMenuGroup(MenuWindow, "Vehicle & CheckBox", RightStart.x, RightStart.y, RightEnd.x, RightEnd.y)
+local DropDownHandle = MachoMenuDropDown(ThirdSection, "Drop Down", 
+    function(Index) print("DropDown selected: "..Index) end, 
+    "Selectable 1", "Selectable 2", "Selectable 3"
+)
 
-MachoMenuCheckbox(RightCol, "Steal Car", function() print("Steal Car: ON") end, function() print("Steal Car: OFF") end)
-MachoMenuCheckbox(RightCol, "Seat Belt", function() print("Seat Belt: ON") end, function() print("Seat Belt: OFF") end)
-MachoMenuCheckbox(RightCol, "Rainbow Vehicle Colour", function() print("Rainbow: ON") end, function() print("Rainbow: OFF") end)
-MachoMenuCheckbox(RightCol, "Horn Boost", function() print("Horn Boost: ON") end, function() print("Horn Boost: OFF") end)
-MachoMenuCheckbox(RightCol, "Vehicle Jump (SPACE)", function() print("Jump: ON") end, function() print("Jump: OFF") end)
-MachoMenuCheckbox(RightCol, "Ghost Vehicle (Ground-Only Collisions)", function() print("Ghost: ON") end, function() print("Ghost: OFF") end)
-MachoMenuCheckbox(RightCol, "Vehicle Godmode", function() print("Godmode: ON") end, function() print("Godmode: OFF") end)
-MachoMenuSlider(RightCol, "Vehicle Invisibility Level", 255, 0, 255, "", 0, function(v) print("Invisibility level: "..v) end)
-MachoMenuCheckbox(RightCol, "Vehicle Invisible", function() print("Invisible: ON") end, function() print("Invisible: OFF") end)
-MachoMenuText(RightCol, "Vehicle Invisible Key (Hold): NONE")
-MachoMenuSlider(RightCol, "Shift Boost Speed", 50, 0, 200, "km/h", 0, function(v) print("Shift Boost speed: "..v.." km/h") end)
-MachoMenuCheckbox(RightCol, "Shift Boost", function() print("Shift Boost: ON") end, function() print("Shift Boost: OFF") end)
-
--- ====== Player ID 3D Display ======
+-- ====== Player IDs 3D Display ======
 local showPlayerIDs = false
 
 function DrawText3D(x, y, z, text)
@@ -118,8 +97,8 @@ Citizen.CreateThread(function()
     end
 end)
 
--- Checkbox للتحكم بعرض Player IDs
-MachoMenuCheckbox(RightCol, "Show Player IDs",
+-- ====== Checkbox to toggle Player IDs ======
+MachoMenuCheckbox(ThirdSection, "Show Player IDs",
     function() showPlayerIDs = true print("Show Player IDs: ON") end,
     function() showPlayerIDs = false print("Show Player IDs: OFF") end
 )
