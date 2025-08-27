@@ -24,7 +24,7 @@ MachoMenuSetAccent(MenuWindow, 220, 20, 60)  -- Red accent like RICO
 
 -- ====== Global Variables ======
 local CurrentTab = "Self"
-local MainContent = nil
+local MainContent = 
 local RightPanel = nil
 
 -- ====== Left Sidebar (Categories) ======
@@ -205,6 +205,7 @@ MachoMenuText(TabsSection, "")
 MachoMenuButton(TabsSection, "Close Menu", function()
     MachoMenuDestroy(MenuWindow)
 end)
+
 
 
 
