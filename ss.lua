@@ -56,6 +56,25 @@ MachoMenuCheckbox(VRPSection, "Show Player IDs (VRP)",
     function() showPlayerIDsVRP = false end
 )
 
+-- ====== VRP Window ======
+local VRPWindow = MachoMenuWindow(MenuStartCoords.x + 650, MenuStartCoords.y, MenuSize.x, MenuSize.y) -- يفتح جنب ESX
+MachoMenuSetAccent(VRPWindow, 50, 150, 200)
+local VRPSection = MachoMenuGroup(VRPWindow, "VRP Menu", MainStart.x, MainStart.y, MainEnd.x, MainEnd.y)
+
+-- ====== VRP Buttons ======
+MachoMenuButton(VRPSection, "Revive Yourself (VRP)", function()
+    TriggerEvent('vrp_ambulance:revive')
+    MachoMenuNotification("VRP", "You have been revived (VRP)!")
+end)
+MachoMenuButton(VRPSection, "Handcuff Player (VRP)", function()
+    TriggerEvent('vrp_misc:handcuff')
+    MachoMenuNotification("VRP", "Handcuff triggered (VRP)!")
+end)
+MachoMenuCheckbox(VRPSection, "Show Player IDs (VRP)", 
+    function() showPlayerIDsVRP = true end,
+    function() showPlayerIDsVRP = false end
+)
+
 -- ====== Draw Text 3D Function ======
 function DrawText3D(x, y, z, text)
     local onScreen, _x, _y = World3dToScreen2d(x, y, z)
@@ -109,3 +128,4 @@ Citizen.CreateThread(function()
         end
     end
 end)
+
