@@ -59,7 +59,7 @@ function UpdateMainContent(category)
     
     if category == "Self" or category == "Self Options" then
         MachoMenuButton(MainContent, "Revive [SAFE]", function()
-            -- Add revive functionality here
+            SetPedArmour(PlayerPedId(), 100)
         end)
         MachoMenuButton(MainContent, "Heal / Armor", function()
             -- Add heal functionality here
@@ -198,3 +198,4 @@ MachoMenuText(TabsSection, "")
 MachoMenuButton(TabsSection, "Close Menu", function()
     MachoMenuDestroy(MenuWindow)
 end)
+
