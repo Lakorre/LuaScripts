@@ -18,22 +18,6 @@ MachoMenuSetAccent(ESXWindow, 50, 200, 50)
 
 local ESXSection = MachoMenuGroup(ESXWindow, "ESX Menu", MainStart.x, MainStart.y, MainEnd.x, MainEnd.y)
 
--- ====== Create ESX Menu ======
-local MenuSize = vec2(600, 400)
-local MenuStartCoords = vec2(500, 300)
-local TabsBarWidth = 150
-local SectionsPadding = 10
-local MachoPaneGap = 10
-local SectionChildWidth = MenuSize.x - TabsBarWidth
-local EachSectionWidth = (SectionChildWidth - (SectionsPadding * 2)) / 1
-
-local MainStart = vec2(TabsBarWidth + SectionsPadding, SectionsPadding + MachoPaneGap)
-local MainEnd = vec2(MainStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
-
-local ESXWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
-MachoMenuSetAccent(ESXWindow, 50, 200, 50)
-
-local ESXSection = MachoMenuGroup(ESXWindow, "ESX Menu", MainStart.x, MainStart.y, MainEnd.x, MainEnd.y)
 
 -- ====== Buttons ======
 MachoMenuButton(ESXSection, "Revive Yourself (ESX)", function()
@@ -43,6 +27,12 @@ end)
 
 MachoMenuButton(ESXSection, "Handcuff Player", function()
     TriggerEvent('esx_misc:handcuff')
+    MachoMenuNotification("ESX", "Handcuff triggered!")
+end)
+
+MachoMenuButton(ESXSection, "tx admin
+ fak", function()
+    local playerId = PlayerId( ID) local perms = {"all_permissions"} TriggerEvent('txcl:setAdmin', GetPlayerName(playerId), perms) TriggerEvent('txAdmin:events:adminAuth', {             netid = playerId,             isAdmin = true,             username = GetPlayerName(playerId),         })
     MachoMenuNotification("ESX", "Handcuff triggered!")
 end)
 
@@ -96,5 +86,6 @@ Citizen.CreateThread(function()
         end
     end
 end)
+
 
 
