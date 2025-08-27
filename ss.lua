@@ -1,97 +1,57 @@
--- إنشاء النافذة الرئيسية
-local MainWindow = MachoMenuWindow(100.0, 100.0, 500.0, 400.0)
+-- إعدادات القائمة
+local MenuSize = vec2(600, 400)
+local MenuStartCoords = vec2(300, 200) 
+local TabsBarWidth = 0
+local SectionChildWidth = MenuSize.x - TabsBarWidth
+local SectionsCount = 3
+local SectionsPadding = 15
+local MachoPaneGap = 10
 
--- تعيين لون مميز (أزرق)
-MachoMenuSetAccent(MainWindow, 0.2, 0.5, 1.0)
+-- حساب عرض كل قسم
+local EachSectionWidth = (SectionChildWidth - (SectionsPadding * (SectionsCount + 1))) / SectionsCount
+
+-- حساب إحداثيات الأقسام
+local SectionOneStart = vec2(TabsBarWidth + (SectionsPadding * 1) + (EachSectionWidth * 0), SectionsPadding + MachoPaneGap)
+local SectionOneEnd = vec2(SectionOneStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
+
+local SectionTwoStart = vec2(TabsBarWidth + (SectionsPadding * 2) + (EachSectionWidth * 1), SectionsPadding + MachoPaneGap)
+local SectionTwoEnd = vec2(SectionTwoStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
+
+local SectionThreeStart = vec2(TabsBarWidth + (SectionsPadding * 3) + (EachSectionWidth * 2), SectionsPadding + MachoPaneGap)
+local SectionThreeEnd = vec2(SectionThreeStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
+
+-- إنشاء النافذة الرئيسية (x, y, width, height)
+local MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
+
+-- تعيين لون مميز (RGB: 137, 52, 235)
+MachoMenuSetAccent(MenuWindow, 137, 52, 235)
 
 -- تعيين مفتاح الاختصار (F9)
-MachoMenuSetKeybind(MainWindow, 0x78)
+MachoMenuSetKeybind(MenuWindow, 0x78)
 
 -- إضافة عنوان صغير
-MachoMenuSmallText(MainWindow, "Welcome to Macho Menu!")
+MachoMenuSmallText(MenuWindow, "Welcome to Macho Menu!")
 
--- إنشاء التبويبات
-local Tab1 = MachoMenuAddTab(MainWindow, "General Settings")
-local Tab2 = MachoMenuAddTab(MainWindow, "Player")
-local Tab3 = MachoMenuAddTab(MainWindow, "Vehicle")
+-- ===== القسم الأول: إعدادات اللاعب =====
+local PlayerSection = MachoMenuGroup(MenuWindow, "Player Settings", SectionOneStart.x, SectionOneStart.y, SectionOneEnd.x, SectionOneEnd.y)
 
--- ===== Tab 1: General Settings =====
-local Tab1Group1 = MachoMenuGroup(Tab1, "Server Settings", 10.0, 10.0, 480.0, 120.0)
-local Tab1Group2 = MachoMenuGroup(Tab1, "Logger Protection", 10.0, 140.0, 480.0, 100.0)
-
--- Server info button
-MachoMenuButton(Tab1Group1, "Server Info", function()
-    MachoMenuNotification("Server Info", "Players online: " .. GetNumberOfPlayers())
-end)
-
--- Dark mode checkbox
-MachoMenuCheckbox(Tab1Group1, "Enable Dark Mode", 
-    function() 
-        MachoMenuNotification("Dark Mode", "Dark mode enabled")
-    end,
-    function() 
-        MachoMenuNotification("Dark Mode", "Dark mode disabled")
-    end
-)
-
--- Volume slider
-MachoMenuSlider(Tab1Group1, "Volume Level", 50.0, 0.0, 100.0, "%", 0, function(value)
-    MachoMenuNotification("Volume", "Volume set to: " .. value .. "%")
-end)
-
--- ===== Logger Protection Functions =====
--- Check logger state button
-MachoMenuButton(Tab1Group2, "Check Logger State", function()
-    local state = MachoGetLoggerState()
-    local stateText = ""
-    if state == 0 then
-        stateText = "All Disabled"
-    elseif state == 3 then
-        stateText = "All Enabled"
-    else
-        stateText = "Partially Enabled (" .. state .. ")"
-    end
-    MachoMenuNotification("Logger State", "Current state: " .. stateText)
-end)
-
--- Disable logger button
-MachoMenuButton(Tab1Group2, "Disable Logger", function()
-    MachoSetLoggerState(0)
-    MachoMenuNotification("Logger", "Logger disabled (state: 0)")
-end)
-
--- Enable logger button
-MachoMenuButton(Tab1Group2, "Enable Logger", function()
-    MachoSetLoggerState(3)
-    MachoMenuNotification("Logger", "Logger enabled (state: 3)")
-end)
-
--- Lock logger permanently (WARNING!)
-MachoMenuButton(Tab1Group2, "🔒 LOCK Logger (Permanent!)", function()
-    MachoLockLogger()
-    MachoMenuNotification("WARNING", "Logger permanently locked until reload!")
-end)
-
--- ===== Tab 2: Player =====
-local Tab2Group1 = MachoMenuGroup(Tab2, "Player Settings", 10.0, 10.0, 480.0, 180.0)
-
--- Heal button
-MachoMenuButton(Tab2Group1, "Heal Player", function()
+-- زر الشفاء
+MachoMenuButton(PlayerSection, "Heal Player", function()
     SetEntityHealth(PlayerPedId(), 200)
     MachoMenuNotification("Health", "Player fully healed!")
 end)
 
--- Armor button
-MachoMenuButton(Tab2Group1, "Give Armor", function()
+-- زر الدروع
+MachoMenuButton(PlayerSection, "Give Armor", function()
     SetPedArmour(PlayerPedId(), 100)
     MachoMenuNotification("Armor", "Full armor applied!")
 end)
 
--- Name input box
-local NameInputBox = MachoMenuInputbox(Tab2Group1, "Change Name", "Enter new name...")
+-- صندوق إدخال للاسم
+local NameInputBox = MachoMenuInputbox(PlayerSection, "Player Name", "Enter new name...")
 
--- Save name button
-MachoMenuButton(Tab2Group1, "Save Name", function()
+-- زر حفظ الاسم
+MachoMenuButton(PlayerSection, "Save Name", function()
     local newName = MachoMenuGetInputbox(NameInputBox)
     if newName and newName ~= "" then
         MachoMenuNotification("Name Change", "Name saved: " .. newName)
@@ -100,8 +60,8 @@ MachoMenuButton(Tab2Group1, "Save Name", function()
     end
 end)
 
--- Weapon dropdown
-MachoMenuDropDown(Tab2Group1, "Give Weapon", function(selected)
+-- قائمة منسدلة للأسلحة
+MachoMenuDropDown(PlayerSection, "Give Weapon", function(selected)
     local weapons = {
         ["Assault Rifle"] = "WEAPON_ASSAULTRIFLE",
         ["Pistol"] = "WEAPON_PISTOL",
@@ -118,20 +78,20 @@ MachoMenuDropDown(Tab2Group1, "Give Weapon", function(selected)
     end
 end, "Assault Rifle", "Pistol", "Sniper Rifle", "Shotgun")
 
--- Keybind example
-MachoMenuKeybind(Tab2Group1, "Teleport Key", 0x54, function(key, toggle) -- T key
+-- مفتاح اختصار للانتقال
+MachoMenuKeybind(PlayerSection, "Teleport Key", 0x54, function(key, toggle) -- T key
     if toggle then
         local coords = GetEntityCoords(PlayerPedId())
         SetEntityCoords(PlayerPedId(), coords.x, coords.y, coords.z + 10.0)
-        MachoMenuNotification("Teleport", "Teleported up!")
+        MachoMenuNotification("Teleport", "Teleported up 10m!")
     end
 end)
 
--- ===== Tab 3: Vehicle =====
-local Tab3Group1 = MachoMenuGroup(Tab3, "Vehicle Settings", 10.0, 10.0, 480.0, 150.0)
+-- ===== القسم الثاني: إعدادات المركبات =====
+local VehicleSection = MachoMenuGroup(MenuWindow, "Vehicle Settings", SectionTwoStart.x, SectionTwoStart.y, SectionTwoEnd.x, SectionTwoEnd.y)
 
--- Repair vehicle button
-MachoMenuButton(Tab3Group1, "Repair Vehicle", function()
+-- زر إصلاح المركبة
+MachoMenuButton(VehicleSection, "Repair Vehicle", function()
     local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
     if vehicle ~= 0 then
         SetVehicleFixed(vehicle)
@@ -142,8 +102,8 @@ MachoMenuButton(Tab3Group1, "Repair Vehicle", function()
     end
 end)
 
--- Boost vehicle button
-MachoMenuButton(Tab3Group1, "Boost Vehicle", function()
+-- زر تسريع المركبة
+MachoMenuButton(VehicleSection, "Boost Vehicle", function()
     local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
     if vehicle ~= 0 then
         SetVehicleEnginePowerMultiplier(vehicle, 2.0)
@@ -153,8 +113,8 @@ MachoMenuButton(Tab3Group1, "Boost Vehicle", function()
     end
 end)
 
--- Vehicle spawn dropdown
-MachoMenuDropDown(Tab3Group1, "Spawn Vehicle", function(selected)
+-- قائمة منسدلة لاستدعاء المركبات
+MachoMenuDropDown(VehicleSection, "Spawn Vehicle", function(selected)
     local vehicles = {
         ["Adder"] = "adder",
         ["Zentorno"] = "zentorno",
@@ -180,28 +140,103 @@ MachoMenuDropDown(Tab3Group1, "Spawn Vehicle", function(selected)
     end
 end, "Adder", "Zentorno", "T20", "Insurgent")
 
--- Speed slider for current vehicle
-MachoMenuSlider(Tab3Group1, "Vehicle Speed", 100.0, 50.0, 300.0, "km/h", 0, function(value)
+-- منزلق للسرعة
+MachoMenuSlider(VehicleSection, "Vehicle Speed", 100.0, 50.0, 300.0, "km/h", 0, function(value)
     local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
     if vehicle ~= 0 then
-        local speed = value / 3.6 -- Convert km/h to m/s
+        local speed = value / 3.6
         SetVehicleForwardSpeed(vehicle, speed)
         MachoMenuNotification("Speed", "Speed set to: " .. value .. " km/h")
     end
 end)
 
--- Get selected info button
-MachoMenuButton(Tab3Group1, "Get Selected Info", function()
+-- زر معلومات المحدد
+MachoMenuButton(VehicleSection, "Selected Info", function()
     local selectedPlayer = MachoMenuGetSelectedPlayer()
     local selectedVehicle = MachoMenuGetSelectedVehicle()
     MachoMenuNotification("Selection", "Player: " .. selectedPlayer .. " | Vehicle: " .. selectedVehicle)
 end)
 
--- Keyboard input examples
+-- ===== القسم الثالث: الإعدادات المتقدمة =====
+local AdvancedSection = MachoMenuGroup(MenuWindow, "Advanced Settings", SectionThreeStart.x, SectionThreeStart.y, SectionThreeEnd.x, SectionThreeEnd.y)
+
+-- معلومات السيرفر
+MachoMenuButton(AdvancedSection, "Server Info", function()
+    MachoMenuNotification("Server Info", "Players online: " .. GetNumberOfPlayers())
+end)
+
+-- صندوق اختيار للوضع الليلي
+MachoMenuCheckbox(AdvancedSection, "Dark Mode", 
+    function() 
+        MachoMenuNotification("Dark Mode", "Dark mode enabled")
+    end,
+    function() 
+        MachoMenuNotification("Dark Mode", "Dark mode disabled")
+    end
+)
+
+-- فحص حالة السجل
+MachoMenuButton(AdvancedSection, "Check Logger", function()
+    local state = MachoGetLoggerState()
+    local stateText = ""
+    if state == 0 then
+        stateText = "All Disabled"
+    elseif state == 3 then
+        stateText = "All Enabled"
+    else
+        stateText = "Partially Enabled (" .. state .. ")"
+    end
+    MachoMenuNotification("Logger State", "Current: " .. stateText)
+end)
+
+-- تعطيل السجل
+MachoMenuButton(AdvancedSection, "Disable Logger", function()
+    MachoSetLoggerState(0)
+    MachoMenuNotification("Logger", "Logger disabled!")
+end)
+
+-- تفعيل السجل
+MachoMenuButton(AdvancedSection, "Enable Logger", function()
+    MachoSetLoggerState(3)
+    MachoMenuNotification("Logger", "Logger enabled!")
+end)
+
+-- قفل السجل نهائياً
+MachoMenuButton(AdvancedSection, "🔒 LOCK Logger", function()
+    MachoLockLogger()
+    MachoMenuNotification("WARNING", "Logger permanently locked!")
+end)
+
+-- زر إغلاق القائمة
+MachoMenuButton(AdvancedSection, "Close Menu", function()
+    MachoMenuDestroy(MenuWindow)
+end)
+
+-- معالج لوحة المفاتيح
 MachoOnKeyDown(function(key)
     if key == 0x70 then -- F1 key
-        if MachoMenuIsOpen(MainWindow) then
-            MachoMenuDestroy(MainWindow)
+        if MachoMenuIsOpen(MenuWindow) then
+            MachoMenuDestroy(MenuWindow)
         end
     end
 end)
+
+-- مثال على حقن المورد
+--[[
+MachoInjectResource('any', [[
+    print("Code injected successfully!")
+]])
+--]]
+
+-- مثال على المصادقة المدفوعة
+--[[
+local KeysBin = MachoWebRequest("https://your-website.com/keys")
+local CurrentKey = MachoAuthenticationKey()
+local KeyPresent = string.find(KeysBin, CurrentKey)
+if KeyPresent ~= nil then
+    print("Key is authenticated [" .. CurrentKey .. "]")
+else
+    print("Key is not in the list [" .. CurrentKey .. "]")
+    MachoMenuDestroy(MenuWindow) -- إغلاق القائمة إذا المفتاح غير صالح
+end
+--]]
