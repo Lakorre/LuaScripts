@@ -61,15 +61,16 @@ function UpdateMainContent(category)
         MachoMenuButton(MainContent, "Revive [SAFE]", function()
             SetPedArmour(PlayerPedId(), 100)
         end)
-       MachoMenuButton(MainContent, "Heal / Armor", function()
+       MachoMenuButton(MainContent, "Armor", function()
     local playerPed = PlayerPedId()
 
-    if DoesEntityExist(playerPed) and not IsEntityDead(playerPed) then
-        SetEntityHealth(playerPed, 200)  -- تعيد الصحة كاملة
-        SetPedArmour(playerPed, 100)     -- تعيد الدرع كاملة
-        MachoMenuNotification("RICO", "Health & Armor Restored")
-    end
+    MachoMenuButton(MainContent, "Heal / Armor", function()
+    local playerPed = PlayerPedId()
+    SetEntityHealth(playerPed, 100)
+    SetPedArmour(playerPed, 100)
+    MachoMenuNotification("RICO", "Health & Armor Restored")
 end)
+
         MachoMenuButton(MainContent, "Suicide", function()
             -- Add suicide functionality here
         end)
