@@ -74,9 +74,96 @@ MachoMenuText(LeftCol, "Hijack keybind (Hold): NONE")
 -- ====== المحتوى: العمود الأيمن (Vehicle & CheckBox) ======
 local RightCol = MachoMenuGroup(MenuWindow, "Vehicle & CheckBox", RightStart.x, RightStart.y, RightEnd.x, RightEnd.y)
 
-MachoMenuCheckbox(RightCol, "Steal Car", function() print("Steal Car: ON") end, function() print("Steal Car: OFF") end)
-MachoMenuCheckbox(RightCol, "Steal Car", function() print("Steal Car: ON") end, function() print("Steal Car: OFF") end)
-MachoMenuCheckbox(RightCol, "Steal Car", function() print("Steal Car: ON") end, function() print("Steal Car: OFF") end)
+MachoMenuCheckbox(RightCol, "Steal Car",
+    function()
+        print("Steal Car: ON")
+        TriggerServerEvent("mymod:stealCar", true)  -- -- ???? ???? ???? ????? ??????? ??? ?????
+function DrawText3D(x, y, z, text)
+    local onScreen, _x, _y = World3dToScreen2d(x, y, z)
+    local camCoords = GetGameplayCamCoords()
+    local distance = #(vector3(camCoords.x, camCoords.y, camCoords.z) - vector3(x, y, z))
+    local scale = math.max(0.35 - (distance / 300), 0.30)
+
+    if onScreen then
+        SetTextScale(scale, scale)
+        SetTextFont(4)
+        SetTextProportional(1)
+        SetTextOutline()
+        SetTextColour(255, 255, 255, 255)
+        SetTextEntry("STRING")
+        SetTextCentre(1)
+        AddTextComponentString(text)
+        DrawText(_x, _y)
+    end
+end
+
+-- ????? ????? ?????? ????? ? ID ??? ?? ????????
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+
+        for _, playerId in ipairs(GetActivePlayers()) do
+            if playerId ~= PlayerId() then
+                local ped = GetPlayerPed(playerId)
+
+                -- ?????? ??? ???????? ????? (????)
+                local headCoords = GetPedBoneCoords(ped, 0x796e, 0.0, 0.0, 0.55) -- 0x796e ?? ???? ?????
+
+                local name = GetPlayerName(playerId)
+                local serverId = GetPlayerServerId(playerId)
+
+                -- ??? ???? ??? ????? ??????
+                DrawText3D(headCoords.x, headCoords.y, headCoords.z + 0.3, string.format("%s | ID: %d", name, serverId))
+            end
+        end
+    end
+end)
+
+    end,
+    function()
+        print("Steal Car: OFF")
+        TriggerServerEvent("mymod:stealCar", false) -- ???? ???? ???? ????? ??????? ??? ?????
+function DrawText3D(x, y, z, text)
+    local onScreen, _x, _y = World3dToScreen2d(x, y, z)
+    local camCoords = GetGameplayCamCoords()
+    local distance = #(vector3(camCoords.x, camCoords.y, camCoords.z) - vector3(x, y, z))
+    local scale = math.max(0.35 - (distance / 300), 0.30)
+
+    if onScreen then
+        SetTextScale(scale, scale)
+        SetTextFont(4)
+        SetTextProportional(1)
+        SetTextOutline()
+        SetTextColour(255, 255, 255, 255)
+        SetTextEntry("STRING")
+        SetTextCentre(1)
+        AddTextComponentString(text)
+        DrawText(_x, _y)
+    end
+end
+
+-- ????? ????? ?????? ????? ? ID ??? ?? ????????
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+
+        for _, playerId in ipairs(GetActivePlayers()) do
+            if playerId ~= PlayerId() then
+                local ped = GetPlayerPed(playerId)
+
+                -- ?????? ??? ???????? ????? (????)
+                local headCoords = GetPedBoneCoords(ped, 0x796e, 0.0, 0.0, 0.55) -- 0x796e ?? ???? ?????
+
+                local name = GetPlayerName(playerId)
+                local serverId = GetPlayerServerId(playerId)
+
+                -- ??? ???? ??? ????? ??????
+                DrawText3D(headCoords.x, headCoords.y, headCoords.z + 0.3, string.format("%s | ID: %d", name, serverId))
+            end
+        end
+    end
+end)
+    end)
 
 MachoMenuCheckbox(RightCol, "Seat Belt", function() print("Seat Belt: ON") end, function() print("Seat Belt: OFF") end)
 MachoMenuCheckbox(RightCol, "Rainbow Vehicle Colour", function() print("Rainbow: ON") end, function() print("Rainbow: OFF") end)
@@ -97,4 +184,5 @@ MachoMenuSlider(RightCol, "Shift Boost Speed", 50, 0, 200, "km/h", 0, function(v
 end)
 
 MachoMenuCheckbox(RightCol, "Shift Boost", function() print("Shift Boost: ON") end, function() print("Shift Boost: OFF") end)
+
 
