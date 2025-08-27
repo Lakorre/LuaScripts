@@ -1,4 +1,4 @@
--- إعدادات القائمة
+-- Menu settings
 local MenuSize = vec2(600, 400)
 local MenuStartCoords = vec2(300, 200) 
 local TabsBarWidth = 0
@@ -7,10 +7,10 @@ local SectionsCount = 3
 local SectionsPadding = 15
 local MachoPaneGap = 10
 
--- حساب عرض كل قسم
+-- Calculate each section width
 local EachSectionWidth = (SectionChildWidth - (SectionsPadding * (SectionsCount + 1))) / SectionsCount
 
--- حساب إحداثيات الأقسام
+-- Calculate section coordinates
 local SectionOneStart = vec2(TabsBarWidth + (SectionsPadding * 1) + (EachSectionWidth * 0), SectionsPadding + MachoPaneGap)
 local SectionOneEnd = vec2(SectionOneStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
 
@@ -20,37 +20,37 @@ local SectionTwoEnd = vec2(SectionTwoStart.x + EachSectionWidth, MenuSize.y - Se
 local SectionThreeStart = vec2(TabsBarWidth + (SectionsPadding * 3) + (EachSectionWidth * 2), SectionsPadding + MachoPaneGap)
 local SectionThreeEnd = vec2(SectionThreeStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
 
--- إنشاء النافذة الرئيسية (x, y, width, height)
+-- Create main window (x, y, width, height)
 local MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
 
--- تعيين لون مميز (RGB: 137, 52, 235)
+-- Set accent color (RGB: 137, 52, 235)
 MachoMenuSetAccent(MenuWindow, 137, 52, 235)
 
--- تعيين مفتاح الاختصار (F9)
+-- Set keybind (F9)
 MachoMenuSetKeybind(MenuWindow, 0x78)
 
--- إضافة عنوان صغير
+-- Add small title text
 MachoMenuSmallText(MenuWindow, "Welcome to Macho Menu!")
 
--- ===== القسم الأول: إعدادات اللاعب =====
+-- ===== Section One: Player Settings =====
 local PlayerSection = MachoMenuGroup(MenuWindow, "Player Settings", SectionOneStart.x, SectionOneStart.y, SectionOneEnd.x, SectionOneEnd.y)
 
--- زر الشفاء
+-- Heal button
 MachoMenuButton(PlayerSection, "Heal Player", function()
     SetEntityHealth(PlayerPedId(), 200)
     MachoMenuNotification("Health", "Player fully healed!")
 end)
 
--- زر الدروع
+-- Armor button
 MachoMenuButton(PlayerSection, "Give Armor", function()
     SetPedArmour(PlayerPedId(), 100)
     MachoMenuNotification("Armor", "Full armor applied!")
 end)
 
--- صندوق إدخال للاسم
+-- Name input box
 local NameInputBox = MachoMenuInputbox(PlayerSection, "Player Name", "Enter new name...")
 
--- زر حفظ الاسم
+-- Save name button
 MachoMenuButton(PlayerSection, "Save Name", function()
     local newName = MachoMenuGetInputbox(NameInputBox)
     if newName and newName ~= "" then
@@ -60,7 +60,7 @@ MachoMenuButton(PlayerSection, "Save Name", function()
     end
 end)
 
--- قائمة منسدلة للأسلحة
+-- Weapon dropdown
 MachoMenuDropDown(PlayerSection, "Give Weapon", function(selected)
     local weapons = {
         ["Assault Rifle"] = "WEAPON_ASSAULTRIFLE",
@@ -78,8 +78,8 @@ MachoMenuDropDown(PlayerSection, "Give Weapon", function(selected)
     end
 end, "Assault Rifle", "Pistol", "Sniper Rifle", "Shotgun")
 
--- مفتاح اختصار للانتقال
-MachoMenuKeybind(PlayerSection, "Teleport Key", 0x54, function(key, toggle) -- T key
+-- Teleport keybind
+MachoMenuKeybind(PlayerSection, "Teleport Key", 0x54, function(key, toggle)
     if toggle then
         local coords = GetEntityCoords(PlayerPedId())
         SetEntityCoords(PlayerPedId(), coords.x, coords.y, coords.z + 10.0)
@@ -87,7 +87,7 @@ MachoMenuKeybind(PlayerSection, "Teleport Key", 0x54, function(key, toggle) -- T
     end
 end)
 
--- ===== القسم الثاني: إعدادات المركبات =====
+-- ===== Section Two: Vehicle Settings =====
 local VehicleSection = MachoMenuGroup(MenuWindow, "Vehicle Settings", SectionTwoStart.x, SectionTwoStart.y, SectionTwoEnd.x, SectionTwoEnd.y)
 
 -- زر إصلاح المركبة
