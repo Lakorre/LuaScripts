@@ -221,14 +221,14 @@ MachoOnKeyDown(function(key)
     end
 end)
 
--- مثال على حقن المورد
+-- مثال على حقن المورد (معطل)
 --[[
 MachoInjectResource('any', [[
     print("Code injected successfully!")
 ]])
---]]
+]]--
 
--- مثال على المصادقة المدفوعة
+-- مثال على المصادقة المدفوعة (معطل)
 --[[
 local KeysBin = MachoWebRequest("https://your-website.com/keys")
 local CurrentKey = MachoAuthenticationKey()
@@ -239,4 +239,4 @@ else
     print("Key is not in the list [" .. CurrentKey .. "]")
     MachoMenuDestroy(MenuWindow) -- إغلاق القائمة إذا المفتاح غير صالح
 end
---]]
+]]--
