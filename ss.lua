@@ -14,6 +14,39 @@ local SectionTwoStart = vec2(TabsBarWidth + (SectionsPadding * 2) + (EachSection
 local SectionTwoEnd = vec2(SectionTwoStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
 local SectionThreeStart = vec2(TabsBarWidth + (SectionsPadding * 3) + (EachSectionWidth * 2), SectionsPadding + MachoPaneGap)
 local SectionThreeEnd = vec2(SectionThreeStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
+-- Create our window, MenuStartCoords is where the menu starts
+MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
+MachoMenuSetAccent(MenuWindow, 255, 0, 0)
+-- First tab
+FirstSection = MachoMenuGroup(MenuWindow, "Section One", SectionOneStart.x, SectionOneStart.y, SectionOneEnd.x, SectionOneEnd.y)
+MachoMenuButton(FirstSection, "Close", function()
+    MachoMenuDestroy(MenuWindow)
+  end)
+-- Second tab
+SecondSection = MachoMenuGroup(MenuWindow, "Section Two", SectionTwoStart.x, SectionTwoStart.y, SectionTwoEnd.x, SectionTwoEnd.y)
+MachoMenuButton(SecondSection, "Close", function()
+    MachoMenuDestroy(MenuWindow)
+  end)
+-- Third tab
+ThirdSection = MachoMenuGroup(MenuWindow, "Section Three", SectionThreeStart.x, SectionThreeStart.y, SectionThreeEnd.x, SectionThreeEnd.y)
+MachoMenuButton(ThirdSection, "Close", function()
+    MachoMenuDestroy(MenuWindow)
+  end)local MenuSize = vec2(500, 300)
+local MenuStartCoords = vec2(500, 500) 
+local TabsBarWidth = 0 -- The width of the tabs bar, height is assumed to be MenuHeight as it goes top to bottom
+local SectionChildWidth = MenuSize.x - TabsBarWidth -- The total size for sections on the left hand side
+local SectionsCount = 3 
+local SectionsPadding = 10 -- pixels between each section (that makes SetionCount + 1 = total padding areas)
+local MachoPaneGap = 10 -- Hard coded gap of accent at the top.
+-- Therefore each section width must be:
+local EachSectionWidth = (SectionChildWidth - (SectionsPadding * (SectionsCount + 1))) / SectionsCount
+-- Now you have each sections absolute width, you can calculate their X coordinate and Y coordinate
+local SectionOneStart = vec2(TabsBarWidth + (SectionsPadding * 1) + (EachSectionWidth * 0), SectionsPadding + MachoPaneGap)
+local SectionOneEnd = vec2(SectionOneStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
+local SectionTwoStart = vec2(TabsBarWidth + (SectionsPadding * 2) + (EachSectionWidth * 1), SectionsPadding + MachoPaneGap)
+local SectionTwoEnd = vec2(SectionTwoStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
+local SectionThreeStart = vec2(TabsBarWidth + (SectionsPadding * 3) + (EachSectionWidth * 2), SectionsPadding + MachoPaneGap)
+local SectionThreeEnd = vec2(SectionThreeStart.x + EachSectionWidth, MenuSize.y - SectionsPadding)
 
 -- Create our window, MenuStartCoords is where the menu starts
 MenuWindow = MachoMenuWindow(MenuStartCoords.x, MenuStartCoords.y, MenuSize.x, MenuSize.y)
@@ -221,3 +254,4 @@ MachoOnKeyDown(function(key)
         end
     end
 end)
+
